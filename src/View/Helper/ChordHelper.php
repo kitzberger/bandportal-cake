@@ -9,6 +9,8 @@ use Cake\View\Helper;
  */
 class ChordHelper extends Helper
 {
+    private const CAPO_PATTERN = '/^(capo\s+)([\d|i|v|x]+)$/im';
+
     /**
      * @param string $text
      * @return string
@@ -30,33 +32,40 @@ class ChordHelper extends Helper
         return $this->transposeText($text, $transposeBy, $options['mode']);
     }
 
-    private function determineTransposeByParameter(&$text, $transposeBy)
+    public static function determineCapo(string $text): int
     {
-        $pattern = '/^(capo\s+)([\d|i|v|x]+)$/im';
-
-        $originalCapo = 0;
-        if (preg_match($pattern, $text, $matches)) {
+        $capo = 0;
+        if (preg_match(self::CAPO_PATTERN, $text, $matches)) {
             switch (strtolower($matches[2])) {
-                case 'i':    $originalCapo = 1; break;
-                case 'ii':   $originalCapo = 2; break;
-                case 'iii':  $originalCapo = 3; break;
-                case 'iv':   $originalCapo = 4; break;
-                case 'v':    $originalCapo = 5; break;
-                case 'vi':   $originalCapo = 6; break;
-                case 'vii':  $originalCapo = 7; break;
-                case 'viii': $originalCapo = 8; break;
-                case 'ix':   $originalCapo = 9; break;
-                case 'x':    $originalCapo = 10; break;
-                case 'xi':   $originalCapo = 11; break;
-                default:     $originalCapo = (int)$matches[2];
+                case 'i':    $capo = 1; break;
+                case 'ii':   $capo = 2; break;
+                case 'iii':  $capo = 3; break;
+                case 'iv':   $capo = 4; break;
+                case 'v':    $capo = 5; break;
+                case 'vi':   $capo = 6; break;
+                case 'vii':  $capo = 7; break;
+                case 'viii': $capo = 8; break;
+                case 'ix':   $capo = 9; break;
+                case 'x':    $capo = 10; break;
+                case 'xi':   $capo = 11; break;
+                default:     $capo = (int)$matches[2];
             }
         }
+
+        return $capo;
+    }
+
+    private function determineTransposeByParameter(string &$text, mixed $transposeBy)
+    {
+        $originalCapo = self::determineCapo($text);
 
         if ($transposeBy === 'auto') {
             $transposeBy = $originalCapo;
         }
+
+        // Change string "Capo X" in text
         $text = preg_replace_callback(
-            $pattern,
+            self::CAPO_PATTERN,
             function ($match) use ($originalCapo, $transposeBy) {
                 $newCapo = ($originalCapo - $transposeBy);
                 $newCapo = self::modulo($newCapo, 12);
