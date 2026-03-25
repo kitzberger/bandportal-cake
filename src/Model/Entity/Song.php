@@ -13,6 +13,9 @@ use Cake\ORM\Entity;
  * @property string $artist
  * @property string $url
  * @property string $text
+ * @property decimal $default_full
+ * @property decimal $default_text
+ * @property decimal $default_chords
  * @property \Cake\I18n\FrozenTime $created
  * @property \Cake\I18n\FrozenTime $modified
  *

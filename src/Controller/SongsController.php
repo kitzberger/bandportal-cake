@@ -105,7 +105,7 @@ class SongsController extends AppController
     {
         $song = $this->Songs->get($id);
 
-        $this->set('transposeBy', $this->request->getQuery('transposeBy') ?? 0);
+        $this->set('transposeBy', $this->request->getQuery('transposeBy') ?? 'off');
         $this->set('mode', $this->request->getQuery('mode') ?? 'full');
 
         $zoom = (float)($this->request->getQuery('zoom') ?? 1.0);

@@ -9,6 +9,9 @@
             echo $this->Form->control('artist');
             if ($currentUser['is_admin']) {
                 echo $this->Form->control('is_pseudo');
+                echo $this->Form->control('zoom_full', ['step' => 0.01]);
+                echo $this->Form->control('zoom_text', ['step' => 0.01]);
+                echo $this->Form->control('zoom_chords', ['step' => 0.01]);
                 if ($githubEnabled) {
                     echo $this->Form->control('url', ['label' => __('URL') . ' (' . \Cake\Core\Configure::read('Github.repository_url') . ')']);
                 }

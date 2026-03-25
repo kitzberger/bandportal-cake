@@ -29,7 +29,7 @@ require CORE_PATH . 'config' . DS . 'bootstrap.php';
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Database\Type;
+use Cake\Database\TypeFactory;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorTrap;
 use Cake\Error\ExceptionTrap;
@@ -163,10 +163,10 @@ ServerRequest::addDetector('tablet', function ($request) {
  * locale specific date formats. For details see
  * @link https://book.cakephp.org/3.0/en/core-libraries/internationalization-and-localization.html#parsing-localized-datetime-data
  */
-Type::build('time');
-Type::build('date');
-Type::build('datetime');
-Type::build('timestamp');
+TypeFactory::build('time');
+TypeFactory::build('date');
+TypeFactory::build('datetime');
+TypeFactory::build('timestamp');
 
 /*
  * Custom Inflector rules, can be set to correctly pluralize or singularize
