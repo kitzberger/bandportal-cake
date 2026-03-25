@@ -59,7 +59,7 @@ class ChordHelper extends Helper
     {
         $originalCapo = self::determineCapo($text);
 
-        if ($transposeBy === 'auto') {
+        if ($transposeBy === 'off') {
             $transposeBy = $originalCapo;
         }
 
