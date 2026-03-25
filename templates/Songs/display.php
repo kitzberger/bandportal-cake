@@ -66,17 +66,17 @@ $iconCapoOff = '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" stro
                 ) . ' ';
                 echo $this->Html->link(
                     '<i class="fi-page-pdf"></i> ' . __('PDF'),
-                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'full', 'zoom' => '1.0'], '_ext' => 'pdf'],
+                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'full', 'zoom' => $song['zoom_full']], '_ext' => 'pdf'],
                     ['escape' => false, 'class' => 'button small success']
                 ) . ' ';
                 echo $this->Html->link(
                     '<i class="fi-page-pdf"></i> ' . __('PDF (Text)'),
-                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'text', 'zoom' => '1.0'], '_ext' => 'pdf'],
+                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'text', 'zoom' => $song['zoom_text']], '_ext' => 'pdf'],
                     ['escape' => false, 'class' => 'button small success']
                 ) . ' ';
                 echo $this->Html->link(
                     '<i class="fi-page-pdf"></i> ' . __('PDF (Chords)'),
-                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'chords', 'zoom' => '1.0'], '_ext' => 'pdf'],
+                    ['controller' => 'Songs', 'action' => 'display', $song->id, '?' => ['transposeBy' => $transposeBy, 'mode' => 'chords', 'zoom' => $song['zoom_chords']], '_ext' => 'pdf'],
                     ['escape' => false, 'class' => 'button small success']
                 );
             ?>
