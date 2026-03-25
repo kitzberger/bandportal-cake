@@ -219,6 +219,10 @@ ins { color: green; text-decoration: none; }
 .button.tiny { padding: 0.325rem 0.75rem 0.3875rem 0.75rem; }
 .button.no-margin { margin: 0 }
 
+.button.active { background: maroon }
+.button.with-svg { position: relative; }
+.button.with-svg svg { width: 24px; height: 24px; margin: -8px; }
+
 .no-wrap { white-space: nowrap; }
 
 div.dashboard > table > tbody > tr { border: 0; }
