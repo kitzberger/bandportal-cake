@@ -48,7 +48,11 @@ class NotificationShell extends Shell
             ],
         ];
         if (!empty($specificUser)) {
-            $options['conditions'][] = ['Users.id' => $specificUser];
+            if (is_numeric($specificUser)) {
+                $options['conditions'][] = ['Users.id' => (int)$specificUser];
+            } else {
+                $options['conditions'][] = ['Users.username' => (string)$specificUser];
+            }
         }
         $users = $this->Users->find('all', $options);
 
