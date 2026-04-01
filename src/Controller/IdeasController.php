@@ -65,8 +65,8 @@ class IdeasController extends AppController
      */
     public function view($id = null)
     {
-        $this->loadModel('Users');
-        $users = $this->Users->find(
+        $usersTable = $this->fetchTable('Users');
+        $users = $usersTable->find(
             'all',
             [
                 'conditions' => [
@@ -74,7 +74,7 @@ class IdeasController extends AppController
                 ],
             ]
         );
-        $passiveUsers = $this->Users->find(
+        $passiveUsers = $usersTable->find(
             'all',
             [
                 'conditions' => [
@@ -182,11 +182,11 @@ class IdeasController extends AppController
      */
     public function share($idea = null, $user = null, $template = 'share')
     {
-        $this->loadModel('Users');
-        $this->loadModel('Shares');
+        $usersTable = $this->fetchTable('Users');
+        $sharesTable = $this->fetchTable('Shares');
 
         $idea = $this->Ideas->get($idea, []);
-        $user = $this->Users->get($user, [
+        $user = $usersTable->get($user, [
             'conditions' => [
                 'Users.is_passive' => true,
             ],
@@ -196,11 +196,11 @@ class IdeasController extends AppController
         $message = __('What\'s your opinion on this here?');
 
         if ($user) {
-            if (!$this->Shares->sharedWithUser('idea', $idea->id, $user['id'])) {
-                $share = $this->Shares->newEmptyEntity();
+            if (!$sharesTable->sharedWithUser('idea', $idea->id, $user['id'])) {
+                $share = $sharesTable->newEmptyEntity();
                 $share->user = $user;
                 $share->idea = $idea;
-                $this->Shares->save($share);
+                $sharesTable->save($share);
             }
 
             $this->sendMail($subject, $message, $user->email, $template, ['user' => $user, 'idea' => $idea]);

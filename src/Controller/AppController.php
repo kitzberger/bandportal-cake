@@ -70,8 +70,8 @@ class AppController extends Controller
         $this->set('currentUser', $currentUser);
 
         if (isset($currentUser) && $currentUser['is_passive'] === true) {
-            $this->loadModel('Shares');
-            $shares = $this->Shares->find('all', [
+            $sharesTable = $this->fetchTable('Shares');
+            $shares = $sharesTable->find('all', [
                 'conditions' => ['Shares.user_id' => $currentUser['id']],
                 'contain' => ['Dates', 'Songs', 'Ideas', 'Collections', 'Files']
             ]);
@@ -109,8 +109,8 @@ class AppController extends Controller
             $id = (int)$this->request->getParam('pass')[0];
         }
 
-        $this->loadModel('Shares');
-        if ($this->Shares->sharedWithUser($type, $id, $user['id'])) {
+        $sharesTable = $this->fetchTable('Shares');
+        if ($sharesTable->sharedWithUser($type, $id, $user['id'])) {
             return true;
         }
 

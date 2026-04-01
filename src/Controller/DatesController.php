@@ -83,8 +83,8 @@ class DatesController extends AppController
      */
     public function view($id = null)
     {
-        $this->loadModel('Users');
-        $users = $this->Users->find(
+        $usersTable = $this->fetchTable('Users');
+        $users = $usersTable->find(
             'all',
             [
                 'conditions' => [
@@ -92,7 +92,7 @@ class DatesController extends AppController
                 ],
             ]
         );
-        $passiveUsers = $this->Users->find(
+        $passiveUsers = $usersTable->find(
             'all',
             [
                 'conditions' => [
@@ -371,13 +371,13 @@ class DatesController extends AppController
      */
     public function share($date = null, $user = null, $template = 'share')
     {
-        $this->loadModel('Users');
-        $this->loadModel('Shares');
+        $usersTable = $this->fetchTable('Users');
+        $sharesTable = $this->fetchTable('Shares');
 
         $date = $this->Dates->get($date, [
             'contain' => ['Locations']
         ]);
-        $user = $this->Users->get($user, [
+        $user = $usersTable->get($user, [
             'conditions' => [
                 'Users.is_passive' => true,
             ],
@@ -387,11 +387,11 @@ class DatesController extends AppController
         $message = __('What\'s your opinion on this here?');
 
         if ($user) {
-            if (!$this->Shares->sharedWithUser('date', $date->id, $user['id'])) {
-                $share = $this->Shares->newEmptyEntity();
+            if (!$sharesTable->sharedWithUser('date', $date->id, $user['id'])) {
+                $share = $sharesTable->newEmptyEntity();
                 $share->user = $user;
                 $share->date = $date;
-                $this->Shares->save($share);
+                $sharesTable->save($share);
             }
 
             $this->sendMail($subject, $message, $user->email, $template, ['user' => $user, 'date' => $date]);

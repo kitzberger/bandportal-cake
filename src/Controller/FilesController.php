@@ -136,17 +136,17 @@ class FilesController extends AppController
                 if ($this->Files->save($file)) {
                     $this->set('file', $file->id);
                     if (isset($data['collection_id'])) {
-                        $this->loadModel('CollectionsFiles');
-                        $collectionsFile = $this->CollectionsFiles->newEmptyEntity();
+                        $collectionsFilesTable = $this->fetchTable('CollectionsFiles');
+                        $collectionsFile = $collectionsFilesTable->newEmptyEntity();
                         $collectionsFile->file_id = $file->id;
                         $collectionsFile->collection_id = $data['collection_id'];
                         $collectionsFile->sorting = 0;
-                        $this->CollectionsFiles->save($collectionsFile);
+                        $collectionsFilesTable->save($collectionsFile);
 
                         if ($file->isAudio()) {
                             // suggest songs that this file might belong to
-                            $this->loadModel('Songs');
-                            $songs = $this->Songs->find('all')->toArray();
+                            $songsTable = $this->fetchTable('Songs');
+                            $songs = $songsTable->find('all')->toArray();
                             $this->set('suggestions', ['songs' => $songs]);
                         }
                     }

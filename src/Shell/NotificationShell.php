@@ -14,8 +14,6 @@ class NotificationShell extends Shell
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadModel('Logs');
-        $this->loadModel('Users');
     }
 
     /**
@@ -42,6 +40,7 @@ class NotificationShell extends Shell
      */
     public function main($specificUser = null)
     {
+        $usersTable = $this->fetchTable('Users');
         $options = [
             'conditions' => [
                 'Users.is_active' => true,
@@ -54,7 +53,7 @@ class NotificationShell extends Shell
                 $options['conditions'][] = ['Users.username' => (string)$specificUser];
             }
         }
-        $users = $this->Users->find('all', $options);
+        $users = $usersTable->find('all', $options);
 
         if ($users->count() === 0) {
             $this->out('No active user(s) found ;-(');
@@ -69,7 +68,7 @@ class NotificationShell extends Shell
 
                 if ($result > 0 && empty($specificUser)) {
                     $user->notified = \Cake\I18n\FrozenTime::now();
-                    $this->Users->save($user);
+                    $usersTable->save($user);
                     $this->out('-> Set "notified" to: ' . $user->notified);
                 }
             }

@@ -32,13 +32,13 @@ class MiscController extends AppController
      */
     public function dashboard()
     {
-        $this->loadModel('Dates');
-        $this->loadModel('Songs');
-        $this->loadModel('Ideas');
-        $this->loadModel('Collections');
+        $datesTable = $this->fetchTable('Dates');
+        $songsTable = $this->fetchTable('Songs');
+        $ideasTable = $this->fetchTable('Ideas');
+        $collectionsTable = $this->fetchTable('Collections');
 
         $now = new FrozenDate();
-        $dates = $this->Dates->find(
+        $dates = $datesTable->find(
             'all',
             [
                 'conditions' => [
@@ -52,14 +52,14 @@ class MiscController extends AppController
                 'limit' => 5,
             ]
         );
-        $songs = $this->Songs->find(
+        $songs = $songsTable->find(
             'all',
             [
                 'order' => 'modified DESC',
                 'limit' => 5,
             ]
         );
-        $ideas = $this->Ideas->find(
+        $ideas = $ideasTable->find(
             'all',
             [
                 'contain' => ['Comments'],
@@ -67,7 +67,7 @@ class MiscController extends AppController
                 'limit' => 5,
             ]
         );
-        $collections = $this->Collections->find(
+        $collections = $collectionsTable->find(
             'all',
             [
                 'contain' => ['Files', 'Songs'],

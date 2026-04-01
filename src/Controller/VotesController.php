@@ -102,8 +102,8 @@ class VotesController extends AppController
                 $vote = $this->Votes->get($vote['id'], [
                     'contain' => ['Users', 'Dates', 'Ideas', 'Dates.Votes', 'Ideas.Votes']
                 ]);
-                $this->loadModel('Users');
-                $users = $this->Users->find('all');
+                $usersTable = $this->fetchTable('Users');
+                $users = $usersTable->find('all');
 
                 if ($this->request->is('ajax')) {
                     if ($this->request->is('json')) {

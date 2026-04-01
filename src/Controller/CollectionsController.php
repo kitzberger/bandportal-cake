@@ -94,8 +94,8 @@ class CollectionsController extends AppController
             ]
         ]);
 
-        $this->loadModel('Users');
-        $passiveUsers = $this->Users->find(
+        $usersTable = $this->fetchTable('Users');
+        $passiveUsers = $usersTable->find(
             'all',
             [
                 'conditions' => [
@@ -172,9 +172,9 @@ class CollectionsController extends AppController
      */
     public function setSongVersion()
     {
-        $this->loadModel('CollectionsSongs');
+        $collectionsSongsTable = $this->fetchTable('CollectionsSongs');
 
-        $collectionSong = $this->CollectionsSongs
+        $collectionSong = $collectionsSongsTable
             ->find('all')
             ->where([
                 'collection_id' => $this->request->getData('collection_id'),
@@ -183,12 +183,12 @@ class CollectionsController extends AppController
             ->limit(1)->first();
 
         if (is_null($collectionSong)) {
-            $collectionSong = $this->CollectionsSongs->newEmptyEntity();
+            $collectionSong = $collectionsSongsTable->newEmptyEntity();
         }
 
         if ($this->request->is('post')) {
-            $collectionSong = $this->CollectionsSongs->patchEntity($collectionSong, $this->request->getData());
-            if ($this->CollectionsSongs->save($collectionSong)) {
+            $collectionSong = $collectionsSongsTable->patchEntity($collectionSong, $this->request->getData());
+            if ($collectionsSongsTable->save($collectionSong)) {
                 if ($this->request->is('ajax')) {
                     if ($this->request->is('json')) {
                     }
@@ -294,11 +294,11 @@ class CollectionsController extends AppController
      */
     public function share($collection = null, $user = null, $template = 'share')
     {
-        $this->loadModel('Users');
-        $this->loadModel('Shares');
+        $usersTable = $this->fetchTable('Users');
+        $sharesTable = $this->fetchTable('Shares');
 
         $collection = $this->Collections->get($collection, []);
-        $user = $this->Users->get($user, [
+        $user = $usersTable->get($user, [
             'conditions' => [
                 'Users.is_passive' => true,
             ],
@@ -308,11 +308,11 @@ class CollectionsController extends AppController
         $message = 'We\'d like to show you this collection here ;-)';
 
         if ($user) {
-            if (!$this->Shares->sharedWithUser('collection', $collection->id, $user['id'])) {
-                $share = $this->Shares->newEmptyEntity();
+            if (!$sharesTable->sharedWithUser('collection', $collection->id, $user['id'])) {
+                $share = $sharesTable->newEmptyEntity();
                 $share->user = $user;
                 $share->collection = $collection;
-                $this->Shares->save($share);
+                $sharesTable->save($share);
             }
 
             $this->sendMail($subject, $message, $user->email, $template, ['user' => $user, 'collection' => $collection]);

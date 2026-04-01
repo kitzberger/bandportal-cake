@@ -12,11 +12,11 @@ class CreateUserShell extends Shell
     public function initialize(): void
     {
         parent::initialize();
-        $this->loadModel('Users');
     }
 
     public function main()
     {
+        $usersTable = $this->fetchTable('Users');
         $this->out('Create new user:');
         $this->hr();
 
@@ -53,7 +53,7 @@ class CreateUserShell extends Shell
             $isPassive = $this->in('Passive?', ['yes', 'no'], 'no');
         }
 
-        $user = $this->Users->newEntity([
+        $user = $usersTable->newEntity([
             'username' => $username,
             'email' => $email,
             'password' => $password,
@@ -62,7 +62,7 @@ class CreateUserShell extends Shell
             'is_passive' => $isPassive=='yes',
         ]);
 
-        if ($this->Users->save($user)) {
+        if ($usersTable->save($user)) {
             $this->success('User creation successfully!');
         } else {
             $this->err('User creation failed!');
