@@ -146,7 +146,7 @@ class CollectionsController extends AppController
             $collection->isNew(true);
             $collection->id = null;
             $collection->user_id = null;
-            $collection->title = $collection->title . ' (copy)';
+            $collection->title .= ' (copy)';
             $collection->created = null;
             $collection->modified = null;
         }

@@ -25,7 +25,7 @@ class AbstractTable extends \Cake\ORM\Table
             }
         }
 
-        return join('<br>', $diffs);
+        return implode('<br>', $diffs);
     }
 
     public function isOwnedBy($id, $userId)

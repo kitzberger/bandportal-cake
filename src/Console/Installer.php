@@ -127,7 +127,7 @@ class Installer
     public static function setFolderPermissions($dir, $io)
     {
         // Change the permissions on a path and output the results.
-        $changePerms = function ($path, $perms, $io) {
+        $changePerms = function ($path, $perms, $io): void {
             // Get permission bits from stat(2) result.
             $currentPerms = fileperms($path) & 0777;
             if (($currentPerms & $perms) == $perms) {
@@ -142,7 +142,7 @@ class Installer
             }
         };
 
-        $walker = function ($dir, $perms, $io) use (&$walker, $changePerms) {
+        $walker = function ($dir, $perms, $io) use (&$walker, $changePerms): void {
             $files = array_diff(scandir($dir), ['.', '..']);
             foreach ($files as $file) {
                 $path = $dir . '/' . $file;

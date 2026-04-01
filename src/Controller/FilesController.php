@@ -249,7 +249,7 @@ class FilesController extends AppController
         }
 
         if (count($errors)) {
-            throw new \Exception(join(', ', $errors));
+            throw new \Exception(implode(', ', $errors));
         } else {
             return $filename;
         }

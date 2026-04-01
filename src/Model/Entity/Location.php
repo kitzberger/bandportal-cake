@@ -42,6 +42,6 @@ class Location extends Entity
         $tmp[] = $this->title;
         $tmp[] = $this->address;
         $tmp[] = $this->zip . ' ' . $this->city;
-        return join(', ', $tmp);
+        return implode(', ', $tmp);
     }
 }

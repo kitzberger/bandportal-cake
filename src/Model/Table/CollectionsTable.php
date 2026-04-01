@@ -136,7 +136,7 @@ class CollectionsTable extends AbstractTable
             }
         }
 
-        return join('<br>', $diffs);
+        return implode('<br>', $diffs);
     }
 
     public function afterSaveCommit(\Cake\Event\Event $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options)

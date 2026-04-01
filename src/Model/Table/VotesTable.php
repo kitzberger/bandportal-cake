@@ -108,7 +108,7 @@ class VotesTable extends AbstractTable
             $diffs[] = '<b>vote</b>: ' . \App\Helper\Diff::htmlDiff($old, $new);
         }
 
-        return join('<br>', $diffs);
+        return implode('<br>', $diffs);
     }
 
     public function afterSaveCommit(\Cake\Event\Event $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options)
