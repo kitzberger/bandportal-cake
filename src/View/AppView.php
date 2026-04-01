@@ -31,8 +31,6 @@ class AppView extends View
      * Use this method to add common initialization code like loading helpers.
      *
      * e.g. `$this->loadHelper('Html');`
-     *
-     * @return void
      */
     public function initialize(): void
     {

@@ -22,8 +22,6 @@ class NotificationShell extends Shell
      * Manage the available sub-commands along with their arguments and help
      *
      * @see http://book.cakephp.org/3.0/en/console-and-shells.html#configuring-options-and-generating-help
-     *
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function getOptionParser(): ConsoleOptionParser
     {
@@ -68,7 +66,7 @@ class NotificationShell extends Shell
                 if ($result > 0 && empty($specificUser)) {
                     $user->notified = \Cake\I18n\FrozenTime::now();
                     $this->Users->save($user);
-                    $this->out('-> Set "notified" to: ' . (string)$user->notified);
+                    $this->out('-> Set "notified" to: ' . $user->notified);
                 }
             }
         }

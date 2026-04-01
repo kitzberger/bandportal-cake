@@ -37,7 +37,7 @@ class Location extends Entity
         'id' => false
     ];
 
-    public function __toString()
+    public function __toString(): string
     {
         $tmp[] = $this->title;
         $tmp[] = $this->address;

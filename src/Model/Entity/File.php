@@ -48,11 +48,11 @@ class File extends Entity
     public function getExtension()
     {
         $fileFormat = strtolower(pathinfo($this->file, PATHINFO_EXTENSION));
-        switch ($fileFormat) {
-                case 'mp3': return 'mpeg';
-                case 'm4a': return 'mp4';
-        }
-        return $fileFormat;
+        return match ($fileFormat) {
+            'mp3' => 'mpeg',
+            'm4a' => 'mp4',
+            default => $fileFormat,
+        };
     }
 
     public function isAudio()

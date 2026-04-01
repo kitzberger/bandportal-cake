@@ -7,11 +7,11 @@ use Cake\Core\Configure;
 
 class CalDAV
 {
-    private static $caldav = null;
-    private static $calendar = null;
-    private static $user = null;
-    private static $pass = null;
-    private static $url = null;
+    private static $caldav;
+    private static $calendar;
+    private static $user;
+    private static $pass;
+    private static $url;
 
     private static function init()
     {
@@ -77,7 +77,7 @@ class CalDAV
 
         $return = self::$caldav->DoDELETERequest($url);
 
-        if ($return && substr($return, 0, 2) == 20) {
+        if ($return && substr((string) $return, 0, 2) == 20) {
             return true;
         } else {
             throw new \Exception('Could not delete event from remote server!');
@@ -109,7 +109,7 @@ class CalDAV
             CURLOPT_USERPWD => self::$user . ':' . self::$pass,
         ]);
         $resp = curl_exec($curl);
-        $info = curl_getinfo($curl);
+        curl_getinfo($curl);
         curl_close($curl);
 
         if ($resp) {
@@ -136,14 +136,14 @@ class CalDAV
             $propertyNameEnd .= ';VALUE=DATE';
             $start = self::formatDate($date['begin']);
             $end = $date['end'] ?: $date['begin'];
-            $end = strtotime($end);
+            $end = strtotime((string) $end);
             $end = self::formatDate($end + 86400);
         } else {
             $start = self::formatTime($date['begin']);
             $end = self::formatTime($date['end'] ?: $date['begin']);
         }
 
-        $event = 'BEGIN:VCALENDAR
+        return 'BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Bandportal//CalDAV Client//EN
 BEGIN:VEVENT
@@ -153,12 +153,9 @@ DTSTAMP:' . $ts . '
 ' . $propertyNameEnd . ':' . $end . '
 SUMMARY:' . trim($date['title'] . (isset($date['text'])&&$date['text'] ? "\nDESCRIPTION:" . str_replace("\r\n", "\\n", $date['text']) : '') . '
 ' . ($date['status']<0 ? 'STATUS:CANCELLED' : ($date['status']==1 ? 'STATUS:TENTATIVE' : ($date['status']==2 ? 'STATUS:CONFIRMED' : ''))) . '
-' . ($date['location'] ? 'LOCATION:' . (string)$date['location'] : '')) . '
+' . ($date['location'] ? 'LOCATION:' . $date['location'] : '')) . '
 END:VEVENT
 END:VCALENDAR';
-        #debug($date); debug([$start, $end]); debug($event); die();
-
-        return $event;
     }
 
     /**
@@ -179,10 +176,9 @@ END:VCALENDAR';
             return $time;
         } elseif ($ts instanceof \Cake\I18n\FrozenTime) {
             return $ts->format($format);
-        } elseif (strtotime($ts) !== false) {
-            $ts = strtotime($ts);
-            $time = date($format, $ts);
-            return $time;
+        } elseif (strtotime((string) $ts) !== false) {
+            $ts = strtotime((string) $ts);
+            return date($format, $ts);
         } else {
             throw new \Exception('Unsupported type!');
         }

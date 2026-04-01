@@ -26,7 +26,6 @@ class LocationsTable extends AbstractTable
      * Initialize method
      *
      * @param array $config The configuration for the Table.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -49,7 +48,6 @@ class LocationsTable extends AbstractTable
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -91,7 +89,6 @@ class LocationsTable extends AbstractTable
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {

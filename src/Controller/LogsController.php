@@ -91,7 +91,7 @@ class LogsController extends AppController
                 'order' => ['Logs.created DESC'],
                 'conditions' => [
                     'Logs.user_id !=' => $user['id'],
-                    'Logs.created >' => $user['notified'] ? $user['notified'] : '2000-01-01',
+                    'Logs.created >' => $user['notified'] ?: '2000-01-01',
                     'Logs.share_id IS' => null // don't include log entries about shares
                 ],
             ]

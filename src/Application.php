@@ -70,17 +70,14 @@ class Application extends BaseApplication
             // Routes collection cache enabled by default, to disable route caching
             // pass null as cacheConfig, example: `new RoutingMiddleware($this)`
             // you might want to disable this cache in case your routing is extremely simple
-            ->add(new RoutingMiddleware($this, null));
+            ->add(new RoutingMiddleware($this));
         return $middlewareQueue;
     }
-    /**
-     * @return void
-     */
     protected function bootstrapCli(): void
     {
         try {
             $this->addPlugin('Bake');
-        } catch (MissingPluginException $e) {
+        } catch (MissingPluginException) {
             // Do not halt if the plugin is missing
         }
         $this->addPlugin('Migrations');

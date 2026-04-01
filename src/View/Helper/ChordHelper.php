@@ -11,11 +11,7 @@ class ChordHelper extends Helper
 {
     private const CAPO_PATTERN = '/^(capo\s+)([\d|i|v|x]+)$/im';
 
-    /**
-     * @param string $text
-     * @return string
-     */
-    public function render($text = '', array $options = [])
+    public function render(string $text = '', array $options = []): string
     {
         if (empty($text)) {
             return '';
@@ -36,20 +32,20 @@ class ChordHelper extends Helper
     {
         $capo = 0;
         if (preg_match(self::CAPO_PATTERN, $text, $matches)) {
-            switch (strtolower($matches[2])) {
-                case 'i':    $capo = 1; break;
-                case 'ii':   $capo = 2; break;
-                case 'iii':  $capo = 3; break;
-                case 'iv':   $capo = 4; break;
-                case 'v':    $capo = 5; break;
-                case 'vi':   $capo = 6; break;
-                case 'vii':  $capo = 7; break;
-                case 'viii': $capo = 8; break;
-                case 'ix':   $capo = 9; break;
-                case 'x':    $capo = 10; break;
-                case 'xi':   $capo = 11; break;
-                default:     $capo = (int)$matches[2];
-            }
+            $capo = match (strtolower($matches[2])) {
+                'i' => 1,
+                'ii' => 2,
+                'iii' => 3,
+                'iv' => 4,
+                'v' => 5,
+                'vi' => 6,
+                'vii' => 7,
+                'viii' => 8,
+                'ix' => 9,
+                'x' => 10,
+                'xi' => 11,
+                default => (int)$matches[2],
+            };
         }
 
         return $capo;
@@ -79,14 +75,8 @@ class ChordHelper extends Helper
 
     /**
      * Transpose a multiline $text by $transposeBy halfnotes
-     *
-     * @param string $text
-     * @param int $transposeBy
-     * @param string $mode
-     *
-     * @return string
      */
-    private function transposeText($text, $transposeBy = null, $mode = 'full')
+    private function transposeText(string $text, int $transposeBy, string $mode = 'full'): string
     {
         if (empty($text)) {
             throw new \Exception('No $text given!');
@@ -108,19 +98,17 @@ class ChordHelper extends Helper
             if (preg_match($pattern, $line)) {
                 // chord line!
                 if (in_array($mode, ['full', 'chords'])) {
-                    $chordLine = preg_replace_callback(
+                    $chordLine = (string)preg_replace_callback(
                         $pattern,
-                        function ($match) use ($transposeBy) {
-                                return call_user_func_array(
-                                    __NAMESPACE__ . '\ChordHelper::transposeChordLine',
-                                    [$match[0], $transposeBy]
-                                );
-                            },
+                        fn($match) => call_user_func_array(
+                            __NAMESPACE__ . '\ChordHelper::transposeChordLine',
+                            [$match[0], $transposeBy]
+                        ),
                         $line
                     );
 
                     if ($mode === 'chords') {
-                        $chordLine = trim(preg_replace('/\s(\s+)/', ' ', $chordLine), "\t") . PHP_EOL;
+                        $chordLine = trim((string) preg_replace('/\s(\s+)/', ' ', $chordLine), "\t") . PHP_EOL;
                     }
 
                     $out .= $chordLine . PHP_EOL;
@@ -141,12 +129,8 @@ class ChordHelper extends Helper
 
     /**
      * Transpose a single $line by $transposeBy halfnotes
-     *
-     * @param string $text
-     * @param int $transposeBy
-     * @return string
      */
-    public static function transposeChordLine($line, $transposeBy = null)
+    public static function transposeChordLine(string $line, int $transposeBy): string
     {
         //print("Transposing line '" . $line . "':");
 
@@ -158,35 +142,27 @@ class ChordHelper extends Helper
         # Process each chord (incl. following whitespace)
         $line = preg_replace_callback(
             '/([ABHCDEFG][^\s]*\s{0,2})/i',
-            function ($match) use ($transposeBy, $keepSpacesUntouched) {
-                return call_user_func_array(
-                    __NAMESPACE__ . '\ChordHelper::transposeChord',
-                    [$match[0], $transposeBy, $keepSpacesUntouched]
-                );
-            },
+            fn($match) => call_user_func_array(
+                __NAMESPACE__ . '\ChordHelper::transposeChord',
+                [$match[0], $transposeBy, $keepSpacesUntouched]
+            ),
             $line
         );
 
         // //print("Done. Now it is: '" + string.rstrip() + "'.\n")
-        return rtrim($line);
+        return rtrim((string) $line);
     }
 
-    #
-    # matchObj.group(0):
-    # - E
-    # - Dm
-    # - H7
-    # - Bb
-    # - A#m7
-    # - ...
-    #
     /**
-     * @param string $text
-     * @param int $transposeBy
-     * @param bool $keepSpacesUntouched
-     * @return string
+     * Transpose a single chord:
+     * - E
+     * - Dm
+     * - H7
+     * - Bb
+     * - A#m7
+     * - ...
      */
-    private static function transposeChord($chord, $transposeBy, $keepSpacesUntouched)
+    private static function transposeChord(string $chord, int $transposeBy, bool $keepSpacesUntouched): string
     {
         $chordLen = strlen($chord);
 
@@ -234,7 +210,7 @@ class ChordHelper extends Helper
                 # cut off the diff-numbered spaces
                 while ($diff < 0) {
                     $diff += 1;
-                    if (substr($newchord, -1) == ' ') {
+                    if (str_ends_with($newchord, ' ')) {
                         $newchord = substr($newchord, 0, -1);
                     }
                 }

@@ -222,7 +222,7 @@ class FilesController extends AppController
             $tempFile = $_FILES[$fileVariable]['tmp_name'];
             $success = true;
 
-            $filename = $_FILES[$fileVariable]['name'];
+            $filename = (string)$_FILES[$fileVariable]['name'];
             $rawBaseName = pathinfo($filename, PATHINFO_FILENAME);
             $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             $filename = $rawBaseName . '.' . $extension;

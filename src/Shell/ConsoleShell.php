@@ -32,7 +32,7 @@ class ConsoleShell extends Shell
      */
     public function main()
     {
-        if (!class_exists('Psy\Shell')) {
+        if (!class_exists(\Psy\Shell::class)) {
             $this->err('<error>Unable to load Psy\Shell.</error>');
             $this->err('');
             $this->err('Make sure you have installed psysh as a dependency,');
@@ -60,8 +60,6 @@ class ConsoleShell extends Shell
 
     /**
      * Display help for this console.
-     *
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function getOptionParser(): ConsoleOptionParser
     {

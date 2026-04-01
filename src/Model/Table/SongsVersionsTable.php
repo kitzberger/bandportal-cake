@@ -30,7 +30,6 @@ class SongsVersionsTable extends AbstractTable
      * Initialize method
      *
      * @param array $config The configuration for the Table.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -63,7 +62,6 @@ class SongsVersionsTable extends AbstractTable
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -101,7 +99,6 @@ class SongsVersionsTable extends AbstractTable
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
@@ -113,7 +110,7 @@ class SongsVersionsTable extends AbstractTable
 
     public function beforeMarshal(\Cake\Event\Event $event, \ArrayObject $data, \ArrayObject $options)
     {
-        $length = trim($data['length']);
+        $length = trim((string) $data['length']);
 
         if (is_numeric($length)) {
             if ($length > 15) {

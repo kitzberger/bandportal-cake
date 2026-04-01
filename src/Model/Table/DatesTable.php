@@ -31,7 +31,6 @@ class DatesTable extends AbstractTable
      * Initialize method
      *
      * @param array $config The configuration for the Table.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -68,23 +67,22 @@ class DatesTable extends AbstractTable
     public function beforeMarshal(\Cake\Event\Event $event, \ArrayObject $data, \ArrayObject $options)
     {
         if (isset($data['begin'])) {
-            if (strlen($data['begin']) === 10) {
+            if (strlen((string) $data['begin']) === 10) {
                 $data['begin'] .= ' 00:00';
             }
         }
         if (isset($data['end'])) {
-            if (strlen($data['end']) === 10) {
+            if (strlen((string) $data['end']) === 10) {
                 $data['end'] .= ' 23:59';
             }
         }
-        $data['is_fullday'] = $data['is_fullday'] ?? 0;
+        $data['is_fullday'] ??= 0;
     }
 
     /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -129,7 +127,6 @@ class DatesTable extends AbstractTable
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {

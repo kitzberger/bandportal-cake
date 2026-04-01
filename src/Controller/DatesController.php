@@ -170,7 +170,7 @@ class DatesController extends AppController
                             $date->uri = $uri;
                             $this->Dates->save($date);
                             $this->Flash->success(__('The date has been published on the remote calendar.'));
-                        } catch (\Exception $e) {
+                        } catch (\Exception) {
                             $this->Flash->error(__('The date could not be put on the remote calendar. Please, try again.'));
                         }
                     }
@@ -216,7 +216,7 @@ class DatesController extends AppController
                             $date->uri = $uri;
                             $this->Dates->save($date);
                             $this->Flash->success(__('The date has been updated on the remote calendar.'));
-                        } catch (\Exception $e) {
+                        } catch (\Exception) {
                             $this->Flash->error(__('The date could not be updated on the remote calendar. Please, try again.'));
                         }
                     }
@@ -250,7 +250,7 @@ class DatesController extends AppController
                 try {
                     CalDAV::deleteEvent($date);
                     $this->Flash->success(__('The date has been deleted from the remote calendar.'));
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $this->Flash->error(__('The date could not be deleted from the remote calendar. Please, try again.'));
                 }
             }

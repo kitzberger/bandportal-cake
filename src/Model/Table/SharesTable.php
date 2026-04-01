@@ -33,7 +33,6 @@ class SharesTable extends AbstractTable
      * Initialize method
      *
      * @param array $config The configuration for the Table.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -71,7 +70,6 @@ class SharesTable extends AbstractTable
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
      */
     public function validationDefault(Validator $validator): Validator
     {
@@ -99,7 +97,6 @@ class SharesTable extends AbstractTable
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
@@ -164,9 +161,7 @@ class SharesTable extends AbstractTable
                 ]
             ]);
             if ($collections->count()) {
-                $ids = array_map(function ($item) {
-                    return $item->collection_id;
-                }, $collections->toArray());
+                $ids = array_map(fn($item) => $item->collection_id, $collections->toArray());
                 return $this->sharedWithUser('collection', $ids, $user_id);
             }
         }

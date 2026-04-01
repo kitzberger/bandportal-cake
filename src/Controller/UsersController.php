@@ -35,7 +35,7 @@ class UsersController extends AppController
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
-                $redirectUrl = urldecode($this->request->getData('redirect')) ?: null;
+                $redirectUrl = urldecode((string) $this->request->getData('redirect')) ?: null;
                 return $this->redirect($this->Auth->redirectUrl($redirectUrl));
             }
             $this->Flash->error(__('Invalid username or password, try again'));
@@ -45,7 +45,7 @@ class UsersController extends AppController
             $redirectUrl = $this->urlencode($this->request->getData('redirect'));
         } elseif ($this->request->getQuery('redirect')) {
             $redirectUrl = $this->urlencode($this->request->getQuery('redirect'));
-        } elseif (substr($this->request->getEnv('HTTP_REFERER'), -5, 5) !== 'login') {
+        } elseif (!str_ends_with((string) $this->request->getEnv('HTTP_REFERER'), 'login')) {
             $redirectUrl = $this->urlencode($this->request->getEnv('HTTP_REFERER'));
         } else {
             $redirectUrl = null;
@@ -55,7 +55,7 @@ class UsersController extends AppController
 
     protected function urlencode($url)
     {
-        return urlencode(urldecode($url));
+        return urlencode(urldecode((string) $url));
     }
 
     public function logout()

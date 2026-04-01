@@ -48,9 +48,7 @@ class CollectionsController extends AppController
             'contain' => [
                 'Users',
                 'Files',
-                'Songs' => function (\Cake\ORM\Query $q) {
-                    return $q->find('all', ['conditions' => ['is_pseudo' => false]]);
-                },
+                'Songs' => fn(\Cake\ORM\Query $q) => $q->find('all', ['conditions' => ['is_pseudo' => false]]),
             ],
             'order' => ['Collections.modified DESC'],
             'conditions' => ['Collections.title LIKE' => '%' . $sword . '%'],

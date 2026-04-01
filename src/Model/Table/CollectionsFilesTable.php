@@ -25,7 +25,6 @@ class CollectionsFilesTable extends Table
      * Initialize method
      *
      * @param array $config The configuration for the Table.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -50,7 +49,6 @@ class CollectionsFilesTable extends Table
      * application integrity.
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {

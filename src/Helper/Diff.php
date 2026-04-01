@@ -4,7 +4,7 @@ namespace App\Helper;
 
 class Diff
 {
-    public static function diffArray($old, $new)
+    public static function diffArray(array $old, array $new)
     {
         $matrix = [];
         $maxlen = 0;
@@ -29,7 +29,7 @@ class Diff
         );
     }
 
-    public static function htmlDiff($old, $new)
+    public static function htmlDiff(string $old, string $new)
     {
         $ret = '';
         $diff = self::diffArray(explode(' ', $old), explode(' ', $new));

@@ -35,8 +35,6 @@ class AjaxView extends AppView
 
     /**
      * Initialization hook method.
-     *
-     * @return void
      */
     public function initialize(): void
     {

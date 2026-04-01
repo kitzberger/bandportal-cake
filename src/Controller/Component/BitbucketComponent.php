@@ -34,7 +34,6 @@ class BitbucketComponent extends Component
      * Initialize properties.
      *
      * @param array $config The config data.
-     * @return void
      */
     public function initialize(array $config): void
     {
