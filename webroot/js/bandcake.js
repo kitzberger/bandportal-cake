@@ -371,6 +371,88 @@ function initSelectize () {
       return confirm(message);
     }
   })
+
+  // Handle touch interactions for selectize items in capture phase, before touch-punch
+  // gets to see them. This gives us full control over both remove (tap .remove) and
+  // drag-to-reorder (drag .item text), without relying on touch-punch's mouse simulation.
+  $('select[multiple]').each(function () {
+    var selectize = this.selectize || $(this).data('selectize')
+    if (!selectize || !selectize.$control) return
+    var $control = selectize.$control
+    var control = $control[0]
+    var drag = null
+
+    control.addEventListener('touchstart', function (e) {
+      var $item = $(e.target).closest('[data-value]')
+      if (!$item.length) return
+      // Block touch-punch from seeing this touch entirely
+      e.stopImmediatePropagation()
+      e.preventDefault()
+      if ($(e.target).closest('.remove').length) return // handled on touchend
+      drag = {
+        $el: $item,
+        startX: e.touches[0].clientX,
+        startY: e.touches[0].clientY,
+        started: false
+      }
+    }, true)
+
+    control.addEventListener('touchmove', function (e) {
+      if (!drag) return
+      e.preventDefault()
+      var touch = e.touches[0]
+      var dx = touch.clientX - drag.startX
+      var dy = touch.clientY - drag.startY
+      if (!drag.started && Math.sqrt(dx * dx + dy * dy) > 5) {
+        drag.started = true
+        drag.$el.addClass('ui-sortable-helper')
+      }
+      if (!drag.started) return
+      // Re-position item based on where finger is
+      $control.children('[data-value]').not(drag.$el).each(function () {
+        var r = this.getBoundingClientRect()
+        if (touch.clientY >= r.top && touch.clientY <= r.bottom) {
+          if (touch.clientX < r.left + r.width / 2) {
+            $(this).before(drag.$el)
+          } else {
+            $(this).after(drag.$el)
+          }
+          return false
+        }
+      })
+    }, {passive: false})
+
+    control.addEventListener('touchend', function (e) {
+      // Handle .remove tap
+      var $remove = $(e.target).closest('.remove')
+      if ($remove.length) {
+        e.stopImmediatePropagation()
+        e.preventDefault()
+        if (!selectize.isLocked) {
+          var $item = $remove.closest('[data-value]')
+          var value = $item.attr('data-value')
+          var label = $item.clone().children().remove().end().text().trim()
+          if (confirm('Are you sure you want to remove "' + label + '"?')) {
+            selectize.removeItem(value)
+          }
+        }
+        return
+      }
+      // Handle drag end
+      if (!drag) return
+      if (drag.started) {
+        drag.$el.removeClass('ui-sortable-helper')
+        var values = []
+        $control.children('[data-value]').each(function () {
+          values.push($(this).attr('data-value'))
+        })
+        selectize.isFocused = false
+        selectize.setValue(values)
+        selectize.isFocused = true
+      }
+      drag = null
+    }, true)
+  })
 }
 
 if (!Date.prototype.toMyDateString) {

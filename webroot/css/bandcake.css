@@ -210,6 +210,15 @@ ins { color: green; text-decoration: none; }
     align-items: center;
 }
 .selectize-control.plugin-remove_button .item .remove { padding: 2px 10px !important }
+/* touch-action: none tells the browser to let JS handle all touch gestures on
+   sortable items, preventing iOS/Android from interpreting drags as page scroll */
+.selectize-control.plugin-drag_drop .selectize-input [data-value] { touch-action: none; }
+.selectize-control .selectize-input [data-value].ui-sortable-helper {
+    opacity: 0.6;
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    cursor: grabbing;
+}
 
 .button-group-votes .button { margin-right: 3px; }
 
