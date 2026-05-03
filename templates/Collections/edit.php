@@ -4,8 +4,12 @@
         <legend><?= __('Edit Collection') ?></legend>
         <?php
             echo $this->Form->control('title');
-            echo $this->Form->control('files._ids', ['options' => $files]);
-            echo $this->Form->control('songs._ids', ['options' => $songs]);
+            if (count($files)) {
+                echo $this->Form->control('files._ids', ['options' => $files]);
+            }
+            if (count($songs)) {
+                echo $this->Form->control('songs._ids', ['options' => $songs]);
+            }
         ?>
     </fieldset>
     <?php

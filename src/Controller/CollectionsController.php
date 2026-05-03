@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Model\Entity\Collection;
+
 /**
  * Collections Controller
  *
@@ -159,8 +161,8 @@ class CollectionsController extends AppController
             }
         }
         $users = $this->Collections->Users->find('list', ['limit' => 200]);
-        $files = $this->Collections->Files->find('list', ['limit' => 200]);
-        $songs = $this->Collections->Songs->find('list', ['limit' => 200]);
+        $files = $this->getOrderedAssociationList('Files', $collection, false);
+        $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
         $this->set('_serialize', ['collection']);
     }
@@ -243,25 +245,30 @@ class CollectionsController extends AppController
             }
         }
         $users = $this->Collections->Users->find('list', ['limit' => 200]);
-
-        // Create a list of all files, but start with the files that are listed in this collection
-        $allFiles = $this->Collections->Files->find('list', ['limit' => 200, 'order' => 'title ASC']);
-        $files = [];
-        foreach ($collection->files as $file) {
-            $files[$file->id] = $file->title;
-        }
-        $files += $allFiles->toArray();
-
-        // Create a list of all songs, but start with the songs that are listed in this collection
-        $allSongs = $this->Collections->Songs->find('list', ['limit' => 200, 'order' => 'title ASC']);
-        $songs = [];
-        foreach ($collection->songs as $song) {
-            $songs[$song->id] = $song->title;
-        }
-        $songs += $allSongs->toArray();
-
+        $files = $this->getOrderedAssociationList('Files', $collection, false);
+        $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
         $this->set('_serialize', ['collection']);
+    }
+
+    /**
+     * Build an ordered list for an association, placing the collection's existing items first.
+     */
+    private function getOrderedAssociationList(string $association, Collection $collection, bool $showAll = true): array
+    {
+        $field = strtolower($association);
+        $all = $this->Collections->{$association}->find('list', ['limit' => 200, 'order' => 'title ASC'])->toArray();
+
+        if (empty($collection->{$field})) {
+            return $showAll ? $all : [];
+        }
+
+        $ordered = [];
+        foreach ($collection->{$field} as $entity) {
+            $ordered[$entity->id] = $entity->title;
+        }
+
+        return $ordered + ($showAll ? $all : []);
     }
 
     /**
