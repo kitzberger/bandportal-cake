@@ -219,6 +219,13 @@ ins { color: green; text-decoration: none; }
     box-shadow: 0 4px 12px rgba(0,0,0,0.35);
     cursor: grabbing;
 }
+@keyframes selectize-drop-flash {
+    0%   { filter: brightness(2) saturate(1.5); transform: scale(1.06); }
+    100% { filter: brightness(1) saturate(1);   transform: scale(1); }
+}
+.selectize-control .selectize-input [data-value].just-dropped {
+    animation: selectize-drop-flash 0.5s ease-out;
+}
 
 .button-group-votes .button { margin-right: 3px; }
 

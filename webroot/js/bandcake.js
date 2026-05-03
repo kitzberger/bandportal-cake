@@ -441,6 +441,7 @@ function initSelectize () {
       // Handle drag end
       if (!drag) return
       if (drag.started) {
+        var droppedValue = drag.$el.attr('data-value')
         drag.$el.removeClass('ui-sortable-helper')
         var values = []
         $control.children('[data-value]').each(function () {
@@ -449,6 +450,16 @@ function initSelectize () {
         selectize.isFocused = false
         selectize.setValue(values)
         selectize.isFocused = true
+        // Find the element in the (possibly re-rendered) DOM and flash it
+        var $dropped = $control.children('[data-value]').filter(function () {
+          return $(this).attr('data-value') === droppedValue
+        })
+        if ($dropped.length) {
+          $dropped.addClass('just-dropped')
+          $dropped[0].addEventListener('animationend', function () {
+            $dropped.removeClass('just-dropped')
+          }, {once: true})
+        }
       }
       drag = null
     }, true)
