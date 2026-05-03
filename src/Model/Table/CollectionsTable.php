@@ -121,12 +121,12 @@ class CollectionsTable extends AbstractTable
 
         foreach (['files', 'songs'] as $field) {
             if ($entity->isNew() === false) {
-                $old = count($entity->getOriginal($field));
+                $old = count($entity->getOriginal($field) ?? []);
             } else {
                 $old = '';
             }
 
-            $new = count($entity->get($field));
+            $new = count($entity->get($field) ?? []);
 
             if ($old !== $new) {
                 $diffs[] = '<b>' . $field . '</b>: ' . \App\Helper\Diff::htmlDiff($old, $new);
