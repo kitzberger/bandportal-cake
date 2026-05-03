@@ -251,6 +251,8 @@ div.dashboard > table td table td:last-child { padding-right: 0; }
 @media only screen and (max-width: 40em) {
     div.dashboard > table > tbody > tr > td { display: block; width: 100%; padding-right: 0; padding-bottom: 20px; }
 
+    .selectize-control.plugin-remove_button .item .remove { padding: 8px 14px !important; }
+
     button.small,
     .button.small {
         /* Make it .tiny on mobile */
