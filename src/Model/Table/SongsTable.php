@@ -100,7 +100,7 @@ class SongsTable extends AbstractTable
 
     public function afterSaveCommit(\Cake\Event\Event $event, \Cake\Datasource\EntityInterface $entity, \ArrayObject $options)
     {
-        $diff = $this->getDiff($entity, ['title', 'artist', 'text', 'url']);
+        $diff = $this->getDiff($entity, ['title', 'artist', 'text', 'url', 'instructions']);
 
         if (!empty($diff)) {
             $logs = \Cake\ORM\TableRegistry::get('Logs');

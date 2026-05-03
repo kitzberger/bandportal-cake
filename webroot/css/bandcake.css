@@ -64,6 +64,23 @@ body.audioplayer-visible #main-container { padding-bottom: 165px }
 .markdown pre code { display: block; }
 .markdown hr { display: none; }
 
+.markdown.instructions { }
+.markdown.instructions ul,
+.markdown.instructions ol,
+.markdown.instructions p {
+    margin-top: 0;
+    margin-bottom: 6px;
+}
+.markdown.instructions ul:last-child,
+.markdown.instructions ol:last-child,
+.markdown.instructions p:last-child { margin-bottom: 0; }
+
+.songs .related .markdown.instructions ul,
+.songs .related .markdown.instructions ol,
+.songs .related .markdown.instructions p {
+    font-size: 14px;
+}
+
 #calendar-wrap {
     margin-bottom: 2em;
 }

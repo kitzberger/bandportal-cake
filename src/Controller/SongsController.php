@@ -199,7 +199,8 @@ class SongsController extends AppController
             if ($this->Songs->save($song)) {
                 $this->Flash->success(__('The song has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                $returnUrl = $this->request->getQuery('returnUrl');
+                return $this->redirect($returnUrl ?: ['action' => 'index']);
             } else {
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }

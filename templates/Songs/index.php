@@ -38,8 +38,9 @@
                     <?= $song->artist ? ' (' . $song->artist . ')' : '' ?>
                 </td>
                 <td>
-                    <?= $song->url ? '<span class="label success round">&#10026;</span>' : '' ?>
-                    <?= count($song->versions) ? '<span class="label round">' . count($song->versions) . '</span>' : '' ?>
+                    <?= $song->url ? '<span class="label success round" title="With exportable chords &amp; lyrics">&#10026;</span>' : '' ?>
+                    <?= !empty($song->instructions) ? '<span class="label warning round" title="With instructions">&#10026;</span>' : '' ?>
+                    <?= count($song->versions) ? '<span class="label round" title="Has various versions">' . count($song->versions) . '</span>' : '' ?>
                 </td>
                 <td class="show-for-medium"><?= $this->element('date', ['date' => $song->created]) ?></td>
                 <td><?= $this->element('date', ['date' => $song->modified]) ?></td>

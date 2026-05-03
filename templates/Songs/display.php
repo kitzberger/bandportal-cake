@@ -84,6 +84,11 @@ $iconCapoOff = '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" stro
         <?php }?>
     </h3>
 
+    <?php if ($song['instructions']) { ?>
+        <h5><?= __('Instructions') ?></h5>
+        <div class="markdown instructions"><?= $this->Markdown->transform($song['instructions']) ?></div>
+    <?php } ?>
+
     <?php if ($song['text']) { ?>
         <div class="markdown mode-<?= $mode ?>"><?= $this->Markdown->transform($this->Chord->render($song['text'], ['transposeBy' => $transposeBy, 'mode' => $mode])) ?></div>
     <?php } ?>
