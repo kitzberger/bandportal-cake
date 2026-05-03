@@ -357,8 +357,19 @@ function initComments () {
 }
 
 function initSelectize () {
+  // https://selectize.dev/docs/demos
   $('select[multiple]').selectize({
-    plugins: ['remove_button', 'drag_drop']
+    plugins: ['remove_button', 'drag_drop'],
+    onDelete: function (values) {
+      if (values.length > 1) {
+        message = 'Are you sure you want to remove these ' + values.length + ' items?';
+      } else {
+        item = $('[data-value=' + values[0] + ']');
+        label = item.clone().children().remove().end().text();
+        message = 'Are you sure you want to remove "' + label + '"?';
+      }
+      return confirm(message);
+    }
   })
 }
 

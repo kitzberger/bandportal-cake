@@ -14,7 +14,7 @@
     <?= $this->Html->css('bandcake.css') ?>
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.default.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css" />
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -113,7 +113,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.js"></script>
     <!--<script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/lang/de.js"></script>-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/locale/de.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"></script>
     <?= $this->Html->script('bandcake.js') ?>
 </body>
 </html>
