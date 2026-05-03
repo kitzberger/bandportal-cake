@@ -46,7 +46,7 @@
         </tr>
         <?php endif; ?>
         <tr>
-            <th><?= __('Tabs/Chords') ?></th>
+            <th><?= __('Tabs/Chords') ?> <span class="label success round" title="With exportable chords &amp; lyrics">&#10026;</span></th>
             <td><?php
                 if ($song->text) {
                     echo $this->Html->link('<i class="fi-page"></i> ' . urldecode($song->url), ['controller' => 'Songs', 'action' => 'display', $song->id], ['escape' => false]);
@@ -56,8 +56,18 @@
         </tr>
     </table>
     <div class="related">
+        <?php if ($song->instructions): ?>
+            <h4>
+                <?= __('Instructions') ?>
+                <span class="label warning round" title="With instructions">&#10026;</span>
+            </h4>
+            <div class="markdown instructions"><?= $this->Markdown->transform($song->instructions); ?></div>
+        </tr>
+        <?php endif; ?>
+
         <h4>
             <?= __('Versions') ?>
+            <span class="label round" title="Has various versions"><?= count($song->versions) ?></span>
             <small>
                 <?= $this->Html->link(
                     '<i class="fi-page-add"></i> ' . __('New'),

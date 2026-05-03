@@ -24,6 +24,7 @@
                     ]
                 ]);
             }
+            echo $this->Form->control('instructions', ['type' => 'textarea']);
         ?>
     </fieldset>
     <?= $this->element('Forms/UserSelect') ?>

@@ -107,6 +107,7 @@
     <?= $this->Html->script('dropzone.js') ?>
     <?= $this->Html->script('foundation.js') ?>
     <?= $this->Html->script('foundation.dropdown.js') ?>
+    <?= $this->Html->script('foundation.reveal.js') ?>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js"></script>

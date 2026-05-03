@@ -119,8 +119,13 @@
                 </td>
                 <td>
                     <?php
-                        if ($song->is_pseudo == false && $song->text) {
-                            echo $this->Html->link('<i class="fi-page"></i>', ['controller' => 'Songs', 'action' => 'display', $song->id], ['escape' => false]);
+                        if ($song->is_pseudo == false) {
+                            if ($song->text) {
+                                echo $this->Html->link('<i class="fi-page"></i>', ['controller' => 'Songs', 'action' => 'display', $song->id], ['escape' => false]);
+                            }
+                            if ($song->instructions) {
+                                echo ' <a data-reveal-id="instructions-modal-' . $song->id . '" title="' . __('Show instructions') . '"><span class="label info round">&#x270D;</span></a>';
+                            }
                         }
                     ?>
                 <td>
@@ -147,6 +152,20 @@
             </tr>
             <?php endforeach; ?>
         </table>
+        <?php foreach ($collection->songs as $song): ?>
+            <?php if ($song->instructions): ?>
+            <div id="instructions-modal-<?= $song->id ?>" class="reveal-modal" data-reveal aria-labelledby="instructions-modal-title-<?= $song->id ?>" aria-hidden="true" role="dialog">
+                <h4 id="instructions-modal-title-<?= $song->id ?>">
+                    <?= h($song->title) ?>
+                    <small>
+<?= $this->Html->link('<i class="fi-pencil"></i> ' . __('Edit'), ['controller' => 'Songs', 'action' => 'edit', $song->id, '?' => ['field' => 'instructions', 'returnUrl' => $this->Url->build(['controller' => 'Collections', 'action' => 'view', $collection->id])]], ['escape' => false, 'class' => 'edit-reveal-modal']) ?>
+                    </small>
+                </h4>
+                <div class="markdown instructions"><?= $this->Markdown->transform($song->instructions); ?></div>
+                <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+            </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
         <?php endif; ?>
     </div>
 </div>

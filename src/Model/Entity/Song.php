@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property string $artist
  * @property string $url
  * @property string $text
+ * @property string|null $instructions
  * @property decimal $default_full
  * @property decimal $default_text
  * @property decimal $default_chords
