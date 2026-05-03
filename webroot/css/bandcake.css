@@ -199,9 +199,32 @@ table.logs td.diff { width: 50%; }
 del { color: red; }
 ins { color: green; text-decoration: none; }
 
+.selectize-control.multi .selectize-input { max-width: 300px; }
 .selectize-control.multi .selectize-input input {  }
-.selectize-control.multi .item {
-    display: block; width: auto;
+.selectize-control.multi .selectize-input .item {
+    width: auto;
+
+    display: flex !important;
+    justify-content: space-between;
+    gap: 1rem; /* adjust as needed */
+    align-items: center;
+}
+.selectize-control.plugin-remove_button .item .remove { padding: 2px 10px !important }
+/* touch-action: none tells the browser to let JS handle all touch gestures on
+   sortable items, preventing iOS/Android from interpreting drags as page scroll */
+.selectize-control.plugin-drag_drop .selectize-input [data-value] { touch-action: none; }
+.selectize-control .selectize-input [data-value].ui-sortable-helper {
+    opacity: 0.6;
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    cursor: grabbing;
+}
+@keyframes selectize-drop-flash {
+    0%   { filter: brightness(2) saturate(1.5); transform: scale(1.06); }
+    100% { filter: brightness(1) saturate(1);   transform: scale(1); }
+}
+.selectize-control .selectize-input [data-value].just-dropped {
+    animation: selectize-drop-flash 0.5s ease-out;
 }
 
 .button-group-votes .button { margin-right: 3px; }
@@ -243,6 +266,8 @@ div.dashboard > table td table td:last-child { padding-right: 0; }
 
 @media only screen and (max-width: 40em) {
     div.dashboard > table > tbody > tr > td { display: block; width: 100%; padding-right: 0; padding-bottom: 20px; }
+
+    .selectize-control.plugin-remove_button .item .remove { padding: 8px 14px !important; }
 
     button.small,
     .button.small {
