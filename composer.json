@@ -15,7 +15,7 @@
         "friendsofcake/cakepdf": "^4.1",
         "h4cc/wkhtmltopdf-amd64": "^0.12.3",
         "zurb/foundation": "5.*",
-        "thecsea/simple-caldav-client": "^0.1.14",
+        "kitzberger/simple-caldav-client": "dev-master as 0.2",
         "josegonzalez/dotenv": "^3.2",
         "admad/cakephp-glide": "^5.1"
     },

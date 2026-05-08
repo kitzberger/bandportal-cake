@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "323c7d56b1864537eb5bd317acec0d23",
+    "content-hash": "b164f680f189af4d7864d47879b075e5",
     "packages": [
         {
             "name": "admad/cakephp-glide",
@@ -930,6 +930,54 @@
                 "source": "https://github.com/kitzberger/cakephp-markdown/tree/4.0.0"
             },
             "time": "2023-04-20T07:58:47+00:00"
+        },
+        {
+            "name": "kitzberger/simple-caldav-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kitzberger/simpleCalDAV.git",
+                "reference": "f2bb04b11a1e8295f52ab28dd3b6edbea1f543c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kitzberger/simpleCalDAV/zipball/f2bb04b11a1e8295f52ab28dd3b6edbea1f543c1",
+                "reference": "f2bb04b11a1e8295f52ab28dd3b6edbea1f543c1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-xml": "*",
+                "php": ">=5.3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "it\\thecsea\\simple_caldav_client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "claudio cardinale",
+                    "email": "cardi@thecsea.it",
+                    "homepage": "http://thecsea.it"
+                }
+            ],
+            "description": "A simple and complete php caldav client",
+            "keywords": [
+                "CalDAV",
+                "Simple",
+                "client"
+            ],
+            "support": {
+                "source": "https://github.com/kitzberger/simpleCalDAV/tree/master"
+            },
+            "time": "2026-05-08T21:41:15+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -2937,54 +2985,6 @@
                 }
             ],
             "time": "2026-03-24T13:12:05+00:00"
-        },
-        {
-            "name": "thecsea/simple-caldav-client",
-            "version": "v0.1.17",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thecsea/simpleCalDAV.git",
-                "reference": "ddf97e1de21659a870bc02d938dc2aad991fb358"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thecsea/simpleCalDAV/zipball/ddf97e1de21659a870bc02d938dc2aad991fb358",
-                "reference": "ddf97e1de21659a870bc02d938dc2aad991fb358",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-xml": "*",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "it\\thecsea\\simple_caldav_client\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "claudio cardinale",
-                    "email": "cardi@thecsea.it",
-                    "homepage": "http://thecsea.it"
-                }
-            ],
-            "description": "A simple and complete php caldav client",
-            "homepage": "http://www.thecsea.it",
-            "keywords": [
-                "CalDAV",
-                "Simple",
-                "client"
-            ],
-            "support": {
-                "source": "https://github.com/thecsea/simpleCalDAV/tree/v0.1.17"
-            },
-            "time": "2024-10-01T14:34:13+00:00"
         },
         {
             "name": "zurb/foundation",
@@ -5267,9 +5267,17 @@
             "time": "2026-03-17T21:31:11+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "kitzberger/simple-caldav-client",
+            "version": "9999999-dev",
+            "alias": "0.2",
+            "alias_normalized": "0.2.0.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "kitzberger/simple-caldav-client": 20,
         "psy/psysh": 0
     },
     "prefer-stable": true,
@@ -5277,6 +5285,6 @@
     "platform": {
         "php": ">=8.2"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
