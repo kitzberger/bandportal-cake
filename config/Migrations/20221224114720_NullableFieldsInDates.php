@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class NullableFieldsInDates extends AbstractMigration
+class NullableFieldsInDates extends BaseMigration
 {
     /**
      * Change Method.

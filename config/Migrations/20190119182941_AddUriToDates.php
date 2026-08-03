@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddUriToDates extends AbstractMigration
+class AddUriToDates extends BaseMigration
 {
     /**
      * Change Method.

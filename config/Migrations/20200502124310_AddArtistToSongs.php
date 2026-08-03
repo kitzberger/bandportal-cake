@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddArtistToSongs extends AbstractMigration
+class AddArtistToSongs extends BaseMigration
 {
     /**
      * Change Method.

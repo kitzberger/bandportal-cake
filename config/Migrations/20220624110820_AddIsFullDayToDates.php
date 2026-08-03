@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddIsFullDayToDates extends AbstractMigration
+class AddIsFullDayToDates extends BaseMigration
 {
     /**
      * Change Method.

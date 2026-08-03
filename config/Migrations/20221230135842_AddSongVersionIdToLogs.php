@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddSongVersionIdToLogs extends AbstractMigration
+class AddSongVersionIdToLogs extends BaseMigration
 {
     /**
      * Change Method.

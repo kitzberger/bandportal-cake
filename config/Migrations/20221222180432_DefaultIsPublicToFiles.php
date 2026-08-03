@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class DefaultIsPublicToFiles extends AbstractMigration
+class DefaultIsPublicToFiles extends BaseMigration
 {
     /**
      * Change Method.

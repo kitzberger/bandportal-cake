@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddCommentsToCollections extends AbstractMigration
+class AddCommentsToCollections extends BaseMigration
 {
     /**
      * Change Method.

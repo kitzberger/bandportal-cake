@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddLocationToDates extends AbstractMigration
+class AddLocationToDates extends BaseMigration
 {
     /**
      * Change Method.
