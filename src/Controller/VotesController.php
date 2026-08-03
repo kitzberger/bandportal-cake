@@ -105,15 +105,17 @@ class VotesController extends AppController
                 ]);
                 $usersTable = $this->fetchTable('Users');
                 $users = $usersTable->find('all');
-
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('vote', $vote);
+                    $this->viewBuilder()->setClassName('Json');
+                    $this->viewBuilder()->setOption('serialize', ['vote']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The vote has been saved.'));
                     return $this->redirect(['action' => 'index']);
                 }
+
             } else {
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
@@ -122,7 +124,7 @@ class VotesController extends AppController
         $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin', 'valueField' => 'combinedTitle']);
         $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
-        $this->set('_serialize', ['vote']);
+        $this->viewBuilder()->setOption('serialize', ['vote']);
     }
 
     /**
@@ -145,9 +147,11 @@ class VotesController extends AppController
                 ]);
 
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('vote', $vote);
+                    $this->viewBuilder()->setClassName('Json');
+                    $this->viewBuilder()->setOption('serialize', ['vote']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The vote has been saved.'));
                     return $this->redirect(['action' => 'index']);
@@ -160,7 +164,7 @@ class VotesController extends AppController
         $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin DESC', 'valueField' => 'combinedTitle']);
         $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
-        $this->set('_serialize', ['vote']);
+        $this->viewBuilder()->setOption('serialize', ['vote']);
     }
 
     /**

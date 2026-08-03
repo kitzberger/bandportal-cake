@@ -80,10 +80,22 @@ class AppController extends Controller
         $this->set('remoteCalendarEnabled', $this->enabledFeatures['remoteCalendar']);
         $this->set('githubEnabled', $this->enabledFeatures['githubRepo']);
 
-        if (!array_key_exists('_serialize', $this->viewBuilder()->getVars()) &&
+        $useJson = $this->request->is('ajax') || $this->request->is('json');
+
+        if (!$useJson &&
+            !array_key_exists('_serialize', $this->viewBuilder()->getVars()) &&
             in_array($this->response->getType(), ['application/json', 'application/xml'])
         ) {
+            $useJson = true;
             $this->set('_serialize', true);
+        }
+
+        if ($useJson) {
+            $this->viewBuilder()->setClassName('Json');
+            $viewVars = $this->viewBuilder()->getVars();
+            if (isset($viewVars['_serialize'])) {
+                $this->viewBuilder()->setOption('serialize', $viewVars['_serialize']);
+            }
         }
     }
 

@@ -181,9 +181,10 @@ class DatesController extends AppController
                 }
 
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('date', $date);
+                    $this->set('_serialize', ['date']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The date has been saved.'));
                     return $this->redirect(['action' => 'index']);

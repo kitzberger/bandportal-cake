@@ -193,9 +193,10 @@ class CollectionsController extends AppController
             $collectionSong = $collectionsSongsTable->patchEntity($collectionSong, $this->request->getData());
             if ($collectionsSongsTable->save($collectionSong)) {
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('collectionSong', $collectionSong);
+                    $this->set('_serialize', ['collectionSong']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The version has been set.'));
                     return $this->redirect(['action' => 'view', $collectionSong->collection_id]);
