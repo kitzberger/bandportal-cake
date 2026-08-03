@@ -919,12 +919,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kitzberger/cakephp-markdown.git",
-                "reference": "16746f0216902b9e1ba40b13e2eb5f003e88eb6e"
+                "reference": "f3084410166e5049124a1252d1ab0d9018aa8c96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kitzberger/cakephp-markdown/zipball/16746f0216902b9e1ba40b13e2eb5f003e88eb6e",
-                "reference": "16746f0216902b9e1ba40b13e2eb5f003e88eb6e",
+                "url": "https://api.github.com/repos/kitzberger/cakephp-markdown/zipball/f3084410166e5049124a1252d1ab0d9018aa8c96",
+                "reference": "f3084410166e5049124a1252d1ab0d9018aa8c96",
                 "shasum": ""
             },
             "require": {
@@ -961,7 +961,7 @@
             "support": {
                 "source": "https://github.com/kitzberger/cakephp-markdown/tree/cakephp-5"
             },
-            "time": "2026-07-20T10:55:24+00:00"
+            "time": "2026-08-03T09:48:43+00:00"
         },
         {
             "name": "kitzberger/simple-caldav-client",
