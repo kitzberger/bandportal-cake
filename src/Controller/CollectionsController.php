@@ -52,7 +52,7 @@ class CollectionsController extends AppController
             ->contain([
                 'Users',
                 'Files',
-                'Songs' => fn(\Cake\ORM\Query $q) => $q->find('all', ['conditions' => ['is_pseudo' => false]]),
+                'Songs' => fn(\Cake\ORM\Query $q) => $q->where(['is_pseudo' => false]),
             ])
             ->order(['Collections.modified DESC'])
             ->where(['Collections.title LIKE' => '%' . $sword . '%']);
@@ -98,14 +98,8 @@ class CollectionsController extends AppController
         ]);
 
         $usersTable = $this->fetchTable('Users');
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
         $zoom = (float)($this->request->getQuery('zoom') ?? 1.0);
 
@@ -161,7 +155,7 @@ class CollectionsController extends AppController
                 $this->Flash->error(__('The collection could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Collections->Users->find('list', ['limit' => 200]);
+        $users = $this->Collections->Users->find('list')->limit(200);
         $files = $this->getOrderedAssociationList('Files', $collection, false);
         $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
@@ -246,7 +240,7 @@ class CollectionsController extends AppController
                 $this->Flash->error(__('The collection could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Collections->Users->find('list', ['limit' => 200]);
+        $users = $this->Collections->Users->find('list')->limit(200);
         $files = $this->getOrderedAssociationList('Files', $collection, false);
         $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
@@ -259,7 +253,7 @@ class CollectionsController extends AppController
     private function getOrderedAssociationList(string $association, Collection $collection, bool $showAll = true): array
     {
         $field = strtolower($association);
-        $all = $this->Collections->{$association}->find('list', ['limit' => 200, 'order' => 'title ASC'])->toArray();
+        $all = $this->Collections->{$association}->find('list')->limit(200)->order('title ASC')->toArray();
 
         if (empty($collection->{$field})) {
             return $showAll ? $all : [];

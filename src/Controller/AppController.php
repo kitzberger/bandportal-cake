@@ -68,10 +68,9 @@ class AppController extends Controller
 
         if (isset($currentUser) && $currentUser['is_passive'] === true) {
             $sharesTable = $this->fetchTable('Shares');
-            $shares = $sharesTable->find('all', [
-                'conditions' => ['Shares.user_id' => $currentUser['id']],
-                'contain' => ['Dates', 'Songs', 'Ideas', 'Collections', 'Files']
-            ]);
+            $shares = $sharesTable->find()
+                ->where(['Shares.user_id' => $currentUser['id']])
+                ->contain(['Dates', 'Songs', 'Ideas', 'Collections', 'Files']);
             $this->set('currentUserShares', $shares);
         }
         $this->set('controller', $this->request->getParam('controller'));

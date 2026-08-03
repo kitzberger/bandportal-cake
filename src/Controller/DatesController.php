@@ -88,22 +88,10 @@ class DatesController extends AppController
     public function view($id = null)
     {
         $usersTable = $this->fetchTable('Users');
-        $users = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_active' => true,
-                ],
-            ]
-        );
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $users = $usersTable->find()
+            ->where(['Users.is_active' => true]);
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
         $date = $this->Dates->get($id, [
             'contain' => [
@@ -123,31 +111,27 @@ class DatesController extends AppController
         $thisDaysBegin = $date->begin->startOfDay();
         $thisDaysEnd = $date->end ? $date->end->endOfDay() : $date->begin->endOfDay();
 
-        $collidingDates = $this->Dates->find(
-            'all',
-            [
-                'contain' => ['Users'],
-                'conditions' => [
+        $collidingDates = $this->Dates->find()
+            ->contain(['Users'])
+            ->where([
+                [
+                    'Dates.id !=' => $id,
+                ],
+                'OR' => [
                     [
-                        'Dates.id !=' => $id,
+                        'Dates.begin >=' => $thisDaysBegin,
+                        'Dates.begin <=' => $thisDaysEnd,
                     ],
-                    'OR' => [
-                        [
-                            'Dates.begin >=' => $thisDaysBegin,
-                            'Dates.begin <=' => $thisDaysEnd,
-                        ],
-                        [
-                            'Dates.end >=' => $thisDaysBegin,
-                            'Dates.end <=' => $thisDaysEnd,
-                        ],
-                        [
-                            'Dates.begin <=' => $thisDaysBegin,
-                            'Dates.end >=' => $thisDaysEnd,
-                        ],
+                    [
+                        'Dates.end >=' => $thisDaysBegin,
+                        'Dates.end <=' => $thisDaysEnd,
+                    ],
+                    [
+                        'Dates.begin <=' => $thisDaysBegin,
+                        'Dates.end >=' => $thisDaysEnd,
                     ],
                 ],
-            ]
-        );
+            ]);
 
         $this->set('users', $users);
         $this->set('passiveUsers', $passiveUsers);
@@ -193,8 +177,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $locations = $this->Dates->Locations->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Dates->Users->find('list')->limit(200)->order('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->order('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }
@@ -233,8 +217,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $locations = $this->Dates->Locations->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Dates->Users->find('list')->limit(200)->order('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->order('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }

@@ -179,7 +179,7 @@ class SongsController extends AppController
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Songs->Users->find('list', ['limit' => 200]);
+        $users = $this->Songs->Users->find('list')->limit(200);
         $this->set(compact('song', 'users'));
         $this->set('_serialize', ['song']);
     }
@@ -207,7 +207,7 @@ class SongsController extends AppController
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Songs->Users->find('list', ['limit' => 200]);
+        $users = $this->Songs->Users->find('list')->limit(200);
         $this->set(compact('song', 'users'));
         $this->set('_serialize', ['song']);
     }

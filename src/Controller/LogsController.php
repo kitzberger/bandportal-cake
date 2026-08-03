@@ -85,18 +85,14 @@ class LogsController extends AppController
      */
     public function notify($user)
     {
-        $logs = $this->Logs->find(
-            'all',
-            [
-                'contain' => $this->contain,
-                'order' => ['Logs.created DESC'],
-                'conditions' => [
-                    'Logs.user_id !=' => $user['id'],
-                    'Logs.created >' => $user['notified'] ?: '2000-01-01',
-                    'Logs.share_id IS' => null // don't include log entries about shares
-                ],
-            ]
-        );
+        $logs = $this->Logs->find()
+            ->contain($this->contain)
+            ->order(['Logs.created DESC'])
+            ->where([
+                'Logs.user_id !=' => $user['id'],
+                'Logs.created >' => $user['notified'] ?: '2000-01-01',
+                'Logs.share_id IS' => null // don't include log entries about shares
+            ]);
 
         if ($logs->count()) {
             $this->sendMail(

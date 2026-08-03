@@ -41,19 +41,15 @@ class NotificationShell extends Shell
     public function main($specificUser = null)
     {
         $usersTable = $this->fetchTable('Users');
-        $options = [
-            'conditions' => [
-                'Users.is_active' => true,
-            ],
-        ];
+        $query = $usersTable->find()->where(['Users.is_active' => true]);
         if (!empty($specificUser)) {
             if (is_numeric($specificUser)) {
-                $options['conditions'][] = ['Users.id' => (int)$specificUser];
+                $query->where(['Users.id' => (int)$specificUser]);
             } else {
-                $options['conditions'][] = ['Users.username' => (string)$specificUser];
+                $query->where(['Users.username' => (string)$specificUser]);
             }
         }
-        $users = $usersTable->find('all', $options);
+        $users = $query;
 
         if ($users->count() === 0) {
             $this->out('No active user(s) found ;-(');

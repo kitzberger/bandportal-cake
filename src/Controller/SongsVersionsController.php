@@ -104,8 +104,8 @@ class SongsVersionsController extends AppController
                 $songsVersion->song_id = $this->request->getQuery('song_id');
             }
         }
-        $users = $this->SongsVersions->Users->find('list', ['limit' => 200]);
-        $songs = $this->SongsVersions->Songs->find('list', ['limit' => 200]);
+        $users = $this->SongsVersions->Users->find('list')->limit(200);
+        $songs = $this->SongsVersions->Songs->find('list')->limit(200);
         $this->set(compact('songsVersion', 'users', 'songs'));
     }
 
@@ -133,8 +133,8 @@ class SongsVersionsController extends AppController
             }
             $this->Flash->error(__('The songs version could not be saved. Please, try again.'));
         }
-        $users = $this->SongsVersions->Users->find('list', ['limit' => 200]);
-        $songs = $this->SongsVersions->Songs->find('list', ['limit' => 200]);
+        $users = $this->SongsVersions->Users->find('list')->limit(200);
+        $songs = $this->SongsVersions->Songs->find('list')->limit(200);
         $this->set(compact('songsVersion', 'users', 'songs'));
     }
 

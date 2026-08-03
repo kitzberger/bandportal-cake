@@ -85,15 +85,15 @@ class VotesController extends AppController
         $vote = $this->Votes->newEmptyEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $previousVote = $this->Votes->find('all', [
-                'conditions' => [
+            $previousVote = $this->Votes->find()
+                ->where([
                     'user_id' => $data['user_id'] ?? '',
                     'OR' => [
                         'idea_id' => $data['idea_id'] ?? '',
                         'date_id' => $data['date_id'] ?? '',
                     ]
-                ],
-            ])->first();
+                ])
+                ->first();
             if ($previousVote) {
                 $vote = $this->Votes->patchEntity($previousVote, $data);
             } else {
@@ -120,9 +120,9 @@ class VotesController extends AppController
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Votes->Users->find('list')->limit(200)->order('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->order('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
         $this->viewBuilder()->setOption('serialize', ['vote']);
     }
@@ -160,9 +160,9 @@ class VotesController extends AppController
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin DESC', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Votes->Users->find('list')->limit(200)->order('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin DESC');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->order('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
         $this->viewBuilder()->setOption('serialize', ['vote']);
     }

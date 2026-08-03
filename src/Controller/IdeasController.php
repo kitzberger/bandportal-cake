@@ -66,22 +66,10 @@ class IdeasController extends AppController
     public function view($id = null)
     {
         $usersTable = $this->fetchTable('Users');
-        $users = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_active' => true,
-                ],
-            ]
-        );
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $users = $usersTable->find()
+            ->where(['Users.is_active' => true]);
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
         $idea = $this->Ideas->get($id, [
             'contain' => [
@@ -120,7 +108,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list', ['limit' => 200, 'order' => 'username']);
+        $users = $this->Ideas->Users->find('list')->limit(200)->order('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }
@@ -147,7 +135,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list', ['limit' => 200, 'order' => 'username']);
+        $users = $this->Ideas->Users->find('list')->limit(200)->order('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }
