@@ -126,7 +126,7 @@ class FilesController extends AppController
             } catch (\Exception $e) {
                 $filename = false;
                 $this->set('error', __('File upload failed! Message:') . ' ' . $e->getMessage());
-                $this->response->header('HTTP/1.1 500', 'Internal Server Error');
+                $this->response = $this->response->withStatus(500);
             }
 
             if ($filename) {
@@ -153,7 +153,7 @@ class FilesController extends AppController
                     }
                 } else {
                     $this->set('error', __('The file could not be saved. Please, try again.'));
-                    $this->response->header('HTTP/1.1 500', 'Internal Server Error');
+                    $this->response = $this->response->withStatus(500);
                 }
             }
         }
