@@ -16,8 +16,6 @@ class BitbucketComponent extends Component
 
     /**
      * Other components utilized by BitbucketComponent
-     *
-     * @var array
      */
     public array $components = ['Flash'];
 

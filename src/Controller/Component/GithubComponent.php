@@ -9,8 +9,6 @@ class GithubComponent extends Component
 {
     /**
      * Other components utilized by GithubComponent
-     *
-     * @var array
      */
     public array $components = ['Flash'];
 
