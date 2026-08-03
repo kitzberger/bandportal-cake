@@ -56,14 +56,13 @@ class SongsController extends AppController
         $query = $this->Songs
             ->find()
             ->contain(['Users', 'SongsVersions'])
-            ->orderBy(['Songs.modified DESC'])
             ->where([
                 'OR' => [
                     'Songs.title LIKE' => '%' . $sword . '%',
                     'Songs.artist LIKE' => '%' . $sword . '%',
                 ],
             ]);
-        $songs = $this->paginate($query);
+        $songs = $this->paginate($query, ['order' => ['Songs.modified' => 'DESC']]);
 
         $this->set(compact('songs', 'sword'));
         $this->set('_serialize', ['songs']);

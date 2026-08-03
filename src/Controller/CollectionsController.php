@@ -54,9 +54,8 @@ class CollectionsController extends AppController
                 'Files',
                 'Songs' => fn(\Cake\ORM\Query $q) => $q->where(['is_pseudo' => false]),
             ])
-            ->orderBy(['Collections.modified DESC'])
             ->where(['Collections.title LIKE' => '%' . $sword . '%']);
-        $collections = $this->paginate($query);
+        $collections = $this->paginate($query, ['order' => ['Collections.modified' => 'DESC']]);
 
         $this->set(compact('collections', 'sword'));
         $this->set('_serialize', ['collections']);

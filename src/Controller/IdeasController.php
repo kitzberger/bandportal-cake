@@ -48,9 +48,8 @@ class IdeasController extends AppController
         $query = $this->Ideas
             ->find()
             ->contain(['Users'])
-            ->orderBy(['Ideas.modified DESC'])
             ->where(['Ideas.title LIKE' => '%' . $sword . '%']);
-        $ideas = $this->paginate($query);
+        $ideas = $this->paginate($query, ['order' => ['Ideas.modified' => 'DESC']]);
 
         $this->set(compact('ideas', 'sword'));
         $this->set('_serialize', ['ideas']);

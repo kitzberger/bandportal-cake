@@ -55,12 +55,12 @@ class DatesController extends AppController
         #debug($firstOfMonth); debug($lastOfMonth);
         $this->paginate = [
             'limit' => 200,
+            'order' => ['Dates.begin' => 'ASC'],
         ];
 
         $query = $this->Dates
             ->find()
             ->contain(['Users', 'Votes'])
-            ->orderBy(['Dates.begin ASC'])
             ->where([
                 'OR' => [
                     [

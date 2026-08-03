@@ -50,9 +50,8 @@ class CommentsController extends AppController
     {
         $query = $this->Comments
             ->find()
-            ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'])
-            ->orderBy(['Comments.modified DESC']);
-        $comments = $this->paginate($query);
+            ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']);
+        $comments = $this->paginate($query, ['order' => ['Comments.modified' => 'DESC']]);
 
         $this->set(compact('comments'));
         $this->set('_serialize', ['comments']);

@@ -42,14 +42,13 @@ class LocationsController extends AppController
         $query = $this->Locations
             ->find()
             ->contain(['Users'])
-            ->orderBy(['Locations.modified DESC'])
             ->where([
                 'OR' => [
                     'Locations.title LIKE' => '%' . $sword . '%',
                     'Locations.city LIKE' => '%' . $sword . '%',
                 ],
             ]);
-        $locations = $this->paginate($query);
+        $locations = $this->paginate($query, ['order' => ['Locations.modified' => 'DESC']]);
 
         $this->set(compact('locations', 'sword'));
         $this->set('_serialize', ['locations']);

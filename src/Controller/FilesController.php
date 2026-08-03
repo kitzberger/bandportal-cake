@@ -48,9 +48,8 @@ class FilesController extends AppController
         $query = $this->Files
             ->find()
             ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'])
-            ->orderBy(['Files.modified DESC'])
             ->where(['Files.title LIKE' => '%' . $sword . '%']);
-        $files = $this->paginate($query);
+        $files = $this->paginate($query, ['order' => ['Files.modified' => 'DESC']]);
 
         $this->set(compact('files', 'sword'));
         $this->set('_serialize', ['files']);

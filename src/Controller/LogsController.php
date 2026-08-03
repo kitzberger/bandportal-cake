@@ -52,9 +52,8 @@ class LogsController extends AppController
     {
         $query = $this->Logs
             ->find()
-            ->contain($this->contain)
-            ->orderBy(['Logs.created DESC']);
-        $logs = $this->paginate($query);
+            ->contain($this->contain);
+        $logs = $this->paginate($query, ['order' => ['Logs.created' => 'DESC']]);
 
         $this->set(compact('logs'));
         $this->set('_serialize', ['logs']);

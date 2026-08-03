@@ -50,9 +50,8 @@ class VotesController extends AppController
     {
         $query = $this->Votes
             ->find()
-            ->contain(['Users', 'Dates', 'Ideas'])
-            ->orderBy(['Votes.modified DESC']);
-        $votes = $this->paginate($query);
+            ->contain(['Users', 'Dates', 'Ideas']);
+        $votes = $this->paginate($query, ['order' => ['Votes.modified' => 'DESC']]);
 
         $this->set(compact('votes'));
         $this->set('_serialize', ['votes']);
