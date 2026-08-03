@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Entity\Collection;
+use CakePdf\View\PdfView;
 
 /**
  * Collections Controller
@@ -11,6 +12,13 @@ use App\Model\Entity\Collection;
  */
 class CollectionsController extends AppController
 {
+    #[\Override]
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->addViewClasses([PdfView::class]);
+    }
+
     #[\Override]
     public function isAuthorized($user)
     {

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use CakePdf\View\PdfView;
+
 /**
  * Songs Controller
  *
@@ -14,6 +16,7 @@ class SongsController extends AppController
     {
         parent::initialize();
         $this->loadComponent('Github');
+        $this->addViewClasses([PdfView::class]);
     }
 
     #[\Override]
