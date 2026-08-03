@@ -137,7 +137,7 @@ class CollectionsController extends AppController
                     'Songs' => ['sort' => 'sorting ASC'],
                 ]
             ]);
-            $collection->isNew();
+            $collection->setNew(true);
             $collection->id = null;
             $collection->user_id = null;
             $collection->title .= ' (copy)';
