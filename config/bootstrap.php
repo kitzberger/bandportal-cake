@@ -35,20 +35,13 @@ use Cake\Error\ErrorTrap;
 use Cake\Error\ExceptionTrap;
 use Cake\Http\ServerRequest;
 use Cake\Log\Log;
-use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
 use Cake\Mailer\TransportFactory;
 use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
-/**
- * Uncomment block of code below if you want to use `.env` file during development.
- * You should copy `config/.env.default to `config/.env` and set/modify the
- * variables as required.
- *
- * It is HIGHLY discouraged to use a .env file in production, due to security risks
- * and decreased performance on each request. The purpose of the .env file is to emulate
- * the presence of the environment variables like they would be present in production.
- */
+require CORE_PATH . 'src/functions.php';
+
 if (!env('APP_NAME') && file_exists(CONFIG . '.env')) {
     $dotenv = new \josegonzalez\Dotenv\Loader([CONFIG . '.env']);
     $dotenv->parse()
@@ -135,7 +128,7 @@ if (!Configure::read('App.fullBaseUrl')) {
 Cache::setConfig(Configure::consume('Cache'));
 ConnectionManager::setConfig(Configure::consume('Datasources'));
 TransportFactory::setConfig(Configure::consume('EmailTransport'));
-Email::setConfig(Configure::consume('Email'));
+Mailer::setConfig(Configure::consume('Email'));
 Log::setConfig(Configure::consume('Log'));
 Security::setSalt(Configure::consume('Security.salt'));
 /*
@@ -189,7 +182,7 @@ Configure::write('DateTimeFormatEnd', 'Y-m-d 23:59');
 
 \Cake\I18n\FrozenTime::setToStringFormat('yyyy-MM-dd HH:mm');
 
-\App\Application::addPlugin('Tanuck/Markdown');
+\App\Application::addPlugin(\Tanuck\Markdown\MarkdownPlugin::class);
 
 \App\Application::addPlugin('CakePdf', ['bootstrap' => true]);
 

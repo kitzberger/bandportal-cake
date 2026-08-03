@@ -36,7 +36,7 @@ class Share extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'user_id' => true,
         'date_id' => true,
         'idea_id' => true,

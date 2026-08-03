@@ -15,7 +15,7 @@
 
 namespace App\View;
 
-use Cake\Network\Response;
+use Cake\Http\Response;
 
 /**
  * A view class that is used for AJAX responses.
@@ -36,6 +36,7 @@ class AjaxView extends AppView
     /**
      * Initialization hook method.
      */
+    #[\Override]
     public function initialize(): void
     {
         parent::initialize();

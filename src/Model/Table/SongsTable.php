@@ -72,15 +72,16 @@ class SongsTable extends AbstractTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         return $validator;
     }
@@ -91,6 +92,7 @@ class SongsTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -103,7 +105,7 @@ class SongsTable extends AbstractTable
         $diff = $this->getDiff($entity, ['title', 'artist', 'text', 'url', 'instructions']);
 
         if (!empty($diff)) {
-            $logs = \Cake\ORM\TableRegistry::get('Logs');
+            $logs = \Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
             $log = $logs->newEntity([
                 'user_id' => $entity->modified_by,
                 'song_id' => $entity->id,

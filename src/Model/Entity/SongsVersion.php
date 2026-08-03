@@ -30,7 +30,7 @@ class SongsVersion extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         'user_id' => true,
         'song_id' => true,
         'title' => true,

@@ -18,10 +18,10 @@ class SharesController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'Collections', 'Files']
-        ];
-        $shares = $this->paginate($this->Shares);
+        $query = $this->Shares
+            ->find()
+            ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'Collections', 'Files']);
+        $shares = $this->paginate($query);
 
         $this->set(compact('shares'));
     }

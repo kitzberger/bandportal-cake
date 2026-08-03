@@ -10,6 +10,7 @@ use Cake\I18n\FrozenDate;
  */
 class MiscController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -28,7 +29,7 @@ class MiscController extends AppController
     /**
      * Dashboard method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function dashboard()
     {

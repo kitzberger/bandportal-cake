@@ -11,6 +11,7 @@ namespace App\Controller;
  */
 class SongsVersionsController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -47,10 +48,10 @@ class SongsVersionsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Songs'],
-        ];
-        $songsVersions = $this->paginate($this->SongsVersions);
+        $query = $this->SongsVersions
+            ->find()
+            ->contain(['Users', 'Songs']);
+        $songsVersions = $this->paginate($query);
 
         $this->set(compact('songsVersions'));
     }

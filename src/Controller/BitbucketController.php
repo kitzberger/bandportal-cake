@@ -6,6 +6,7 @@ use Cake\Cache\Cache;
 
 class BitbucketController extends AppController
 {
+    #[\Override]
     public function initialize(): void
     {
         parent::initialize();
@@ -15,7 +16,7 @@ class BitbucketController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {

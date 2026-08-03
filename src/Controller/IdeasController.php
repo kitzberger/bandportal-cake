@@ -9,6 +9,7 @@ namespace App\Controller;
  */
 class IdeasController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -38,19 +39,18 @@ class IdeasController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => ['Users'],
-            'order' => ['Ideas.modified DESC'],
-            'conditions' => ['Ideas.title LIKE' => '%' . $sword . '%'],
-        ];
-
-        $ideas = $this->paginate($this->Ideas);
+        $query = $this->Ideas
+            ->find()
+            ->contain(['Users'])
+            ->order(['Ideas.modified DESC'])
+            ->where(['Ideas.title LIKE' => '%' . $sword . '%']);
+        $ideas = $this->paginate($query);
 
         $this->set(compact('ideas', 'sword'));
         $this->set('_serialize', ['ideas']);
@@ -60,7 +60,7 @@ class IdeasController extends AppController
      * View method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
@@ -105,7 +105,7 @@ class IdeasController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -129,8 +129,8 @@ class IdeasController extends AppController
      * Edit method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -156,7 +156,7 @@ class IdeasController extends AppController
      * Delete method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -177,8 +177,8 @@ class IdeasController extends AppController
      *
      * @param string|null $idea Idea id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($idea = null, $user = null, $template = 'share')
     {

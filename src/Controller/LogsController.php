@@ -31,6 +31,7 @@ class LogsController extends AppController
         'Shares',
     ];
 
+    #[\Override]
     public function isAuthorized($user)
     {
         if ($user['is_active']) {
@@ -45,15 +46,15 @@ class LogsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => $this->contain,
-            'order' => ['Logs.created DESC'],
-        ];
-        $logs = $this->paginate($this->Logs);
+        $query = $this->Logs
+            ->find()
+            ->contain($this->contain)
+            ->order(['Logs.created DESC']);
+        $logs = $this->paginate($query);
 
         $this->set(compact('logs'));
         $this->set('_serialize', ['logs']);
@@ -63,7 +64,7 @@ class LogsController extends AppController
      * View method
      *
      * @param string|null $id Log id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)

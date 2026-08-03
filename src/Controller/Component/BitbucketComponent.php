@@ -19,12 +19,12 @@ class BitbucketComponent extends Component
      *
      * @var array
      */
-    public $components = ['RequestHandler', 'Flash'];
+    public array $components = ['Flash'];
 
     /**
      * Instance of the Session object
      *
-     * @var \Cake\Network\Session
+     * @var \Cake\Http\Session
      * @deprecated 3.1.0 Will be removed in 4.0
      */
     public $session;
@@ -45,14 +45,14 @@ class BitbucketComponent extends Component
         $this->_config['REPOSITORY_URL'] = Configure::read('Bitbucket.repository_url');
 
         // absolute URL to oauth controller
-        $authUrl  = 'http' . ($this->controller->request->env('SERVER_PORT')==443 ? 's' : '') . '://';
-        $authUrl .= $this->controller->request->env('HTTP_HOST');
+        $authUrl  = 'http' . ($this->controller->request->getEnv('SERVER_PORT')==443 ? 's' : '') . '://';
+        $authUrl .= $this->controller->request->getEnv('HTTP_HOST');
         $authUrl .= Router::url(['controller' => 'Bitbucket', 'action' => 'index']);
         $this->_config['REDIRECT_URI'] = $authUrl;
     }
 
     /**
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function authorize()
     {
@@ -92,7 +92,7 @@ class BitbucketComponent extends Component
                 $this->Flash->set('Now connected to bitbucket.org!');
 
                 if ($url = $this->session->read('Bitbucket_OAuth2_redirect')) {
-                    $this->session->write('Bitbucket_OAuth2_redirect', null);
+                    $this->session->write('Bitbucket_OAuth2_redirect');
                     $this->controller->redirect($url);
                 }
             }

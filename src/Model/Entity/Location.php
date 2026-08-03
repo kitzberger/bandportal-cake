@@ -32,11 +32,12 @@ class Location extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false
     ];
 
+    #[\Override]
     public function __toString(): string
     {
         $tmp[] = $this->title;

@@ -11,6 +11,7 @@ use App\Model\Entity\Collection;
  */
 class CollectionsController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -40,22 +41,22 @@ class CollectionsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => [
+        $query = $this->Collections
+            ->find()
+            ->contain([
                 'Users',
                 'Files',
                 'Songs' => fn(\Cake\ORM\Query $q) => $q->find('all', ['conditions' => ['is_pseudo' => false]]),
-            ],
-            'order' => ['Collections.modified DESC'],
-            'conditions' => ['Collections.title LIKE' => '%' . $sword . '%'],
-        ];
-        $collections = $this->paginate($this->Collections);
+            ])
+            ->order(['Collections.modified DESC'])
+            ->where(['Collections.title LIKE' => '%' . $sword . '%']);
+        $collections = $this->paginate($query);
 
         $this->set(compact('collections', 'sword'));
         $this->set('_serialize', ['collections']);
@@ -65,7 +66,7 @@ class CollectionsController extends AppController
      * View method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
@@ -129,7 +130,7 @@ class CollectionsController extends AppController
      * Add/copy method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function add($id = null)
@@ -143,7 +144,7 @@ class CollectionsController extends AppController
                     'Songs' => ['sort' => 'sorting ASC'],
                 ]
             ]);
-            $collection->isNew(true);
+            $collection->isNew();
             $collection->id = null;
             $collection->user_id = null;
             $collection->title .= ' (copy)';
@@ -170,7 +171,7 @@ class CollectionsController extends AppController
     /**
      * Set version for a song within a collection
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function setSongVersion()
     {
@@ -212,8 +213,8 @@ class CollectionsController extends AppController
      * Edit method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -275,7 +276,7 @@ class CollectionsController extends AppController
      * Delete method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -296,8 +297,8 @@ class CollectionsController extends AppController
      *
      * @param string|null $collection Collection id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($collection = null, $user = null, $template = 'share')
     {

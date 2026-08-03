@@ -88,9 +88,9 @@ return [
      */
     'Cache' => [
         'default' => [
-            'className' => 'Cake\Cache\Engine\FileEngine',
+            'className' => \Cake\Cache\Engine\FileEngine::class,
             'path' => CACHE,
-            'url' => env('CACHE_DEFAULT_URL', null),
+            'url' => env('CACHE_DEFAULT_URL'),
         ],
         /**
          * Configure the cache used for general framework caching.
@@ -99,12 +99,12 @@ return [
          * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
-            'className' => 'Cake\Cache\Engine\FileEngine',
+            'className' => \Cake\Cache\Engine\FileEngine::class,
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKECORE_URL', null),
+            'url' => env('CACHE_CAKECORE_URL'),
         ],
         /**
          * Configure the cache for model and datasource caches. This cache
@@ -113,12 +113,12 @@ return [
          * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
          */
         '_cake_model_' => [
-            'className' => 'Cake\Cache\Engine\FileEngine',
+            'className' => \Cake\Cache\Engine\FileEngine::class,
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKEMODEL_URL', null),
+            'url' => env('CACHE_CAKEMODEL_URL'),
         ],
         /**
          * Configure the cache for routes. The cached routes collection is built the
@@ -126,12 +126,12 @@ return [
          * Duration will be set to '+2 seconds' in bootstrap.php when debug = true
          */
         '_cake_routes_' => [
-            'className' => 'Cake\Cache\Engine\FileEngine',
+            'className' => \Cake\Cache\Engine\FileEngine::class,
             'prefix' => 'myapp_cake_routes_',
             'path' => CACHE,
             'serialize' => true,
             'duration' => '+1 years',
-            'url' => env('CACHE_CAKEROUTES_URL', null),
+            'url' => env('CACHE_CAKEROUTES_URL'),
         ],
     ],
     /**
@@ -190,7 +190,7 @@ return [
      */
     'EmailTransport' => [
         'default' => [
-            'className' => 'Cake\Mailer\Transport\MailTransport',
+            'className' => \Cake\Mailer\Transport\MailTransport::class,
             /*
              * The following keys are used in SMTP transports:
              */
@@ -201,7 +201,7 @@ return [
             'password' => null,
             'client' => null,
             'tls' => null,
-            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL'),
         ],
     ],
     /**
@@ -236,8 +236,8 @@ return [
      */
     'Datasources' => [
         'default' => [
-            'className' => 'Cake\Database\Connection',
-            'driver' => 'Cake\Database\Driver\Mysql',
+            'className' => \Cake\Database\Connection::class,
+            'driver' => \Cake\Database\Driver\Mysql::class,
             'persistent' => false,
             'host' => 'db',
             /*
@@ -274,14 +274,14 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-            'url' => env('DATABASE_URL', null),
+            'url' => env('DATABASE_URL'),
         ],
         /**
          * The test connection is used during the test suite.
          */
         'test' => [
-            'className' => 'Cake\Database\Connection',
-            'driver' => 'Cake\Database\Driver\Mysql',
+            'className' => \Cake\Database\Connection::class,
+            'driver' => \Cake\Database\Driver\Mysql::class,
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
@@ -294,7 +294,7 @@ return [
             'quoteIdentifiers' => false,
             'log' => false,
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-            'url' => env('DATABASE_TEST_URL', null),
+            'url' => env('DATABASE_TEST_URL'),
         ],
     ],
     /**
@@ -302,27 +302,27 @@ return [
      */
     'Log' => [
         'debug' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => \Cake\Log\Engine\FileLog::class,
             'path' => LOGS,
             'file' => 'debug',
-            'url' => env('LOG_DEBUG_URL', null),
-            'scopes' => false,
+            'url' => env('LOG_DEBUG_URL'),
+            'scopes' => null,
             'levels' => ['notice', 'info', 'debug'],
         ],
         'error' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => \Cake\Log\Engine\FileLog::class,
             'path' => LOGS,
             'file' => 'error',
-            'url' => env('LOG_ERROR_URL', null),
-            'scopes' => false,
+            'url' => env('LOG_ERROR_URL'),
+            'scopes' => null,
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
         ],
         // To enable this dedicated query log, you need set your datasource's log flag to true
         'queries' => [
-            'className' => 'Cake\Log\Engine\FileLog',
+            'className' => \Cake\Log\Engine\FileLog::class,
             'path' => LOGS,
             'file' => 'queries',
-            'url' => env('LOG_QUERIES_URL', null),
+            'url' => env('LOG_QUERIES_URL'),
             'scopes' => ['queriesLog'],
         ],
     ],
@@ -372,10 +372,10 @@ return [
     ],
 
     'Calendar' => [
-        'calendar' => env('CALENDAR_NAME', null),
-        'user' => env('CALENDAR_USER', null),
-        'pass' => env('CALENDAR_PASS', null),
-        'url' => env('CALENDAR_URL', null),
+        'calendar' => env('CALENDAR_NAME'),
+        'user' => env('CALENDAR_USER'),
+        'pass' => env('CALENDAR_PASS'),
+        'url' => env('CALENDAR_URL'),
         'template_date_title' => env('CALENDAR_TEMPLATE_DATE_TITLE', 'Rehearsal at %dam'),
     ],
 

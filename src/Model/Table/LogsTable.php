@@ -78,15 +78,16 @@ class LogsTable extends Table
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('diff', 'create')
-            ->notEmpty('diff');
+            ->notEmptyString('diff');
 
         return $validator;
     }
@@ -97,6 +98,7 @@ class LogsTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));

@@ -5,7 +5,7 @@ namespace App\Controller;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\Mailer\Email;
+use Cake\Mailer\Mailer;
 
 /**
  * Application Controller
@@ -30,21 +30,8 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
-
-        $this->loadComponent('Auth', [
-            'authorize' => ['Controller'],
-            'loginRedirect' => [
-                'controller' => 'Misc',
-                'action' => 'dashboard'
-            ],
-            'logoutRedirect' => [
-                'controller' => 'Pages',
-                'action' => 'display',
-                'home'
-            ]
-        ]);
+        $this->loadComponent('Authentication.Authentication');
 
         $this->viewBuilder()->addHelpers([
             'Tanuck/Markdown.Markdown' => [
@@ -64,9 +51,19 @@ class AppController extends Controller
      * @param \Cake\Event\EventInterface $event The beforeRender event.
      * @return void
      */
+    public function beforeFilter(EventInterface $event)
+    {
+        $identity = $this->Authentication->getIdentity();
+        if ($identity && !$this->isAuthorized($identity->getOriginalData())) {
+            $this->Flash->error('Access denied.');
+            return $this->redirect('/');
+        }
+    }
+
     public function beforeRender(EventInterface $event)
     {
-        $currentUser = $this->Auth->User();
+        $identity = $this->Authentication->getIdentity();
+        $currentUser = $identity ? $identity->getOriginalData() : null;
         $this->set('currentUser', $currentUser);
 
         if (isset($currentUser) && $currentUser['is_passive'] === true) {
@@ -119,20 +116,24 @@ class AppController extends Controller
 
     protected function sendMail($subject, $message, $to, $template = 'default', $viewVars = [])
     {
-        $deliveryProfile = 'default';
-        $config = Email::getConfig($deliveryProfile);
-        if (empty($config) || empty($config['from'])) {
+        $mailer = new Mailer('default');
+
+        $from = $mailer->getMessage()->getFrom();
+        if (empty($from)) {
             throw new \Exception('Missing default from address in config!');
         }
-        $from = $config['from'];
 
-        $email = new Email(['template' => $template, 'layout' => 'default']);
-        $email->setTransport('default')
+        if ($message !== null) {
+            $mailer->getMessage()->setBodyHtml($message);
+        } else {
+            $mailer->viewBuilder()->setTemplate($template);
+            $mailer->setViewVars($viewVars);
+        }
+
+        $mailer
             ->setEmailFormat('html')
-            ->setViewVars($viewVars)
             ->setTo($to)
-            ->setFrom($from)
             ->setSubject($subject)
-            ->send($message);
+            ->deliver();
     }
 }

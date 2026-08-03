@@ -50,6 +50,7 @@ class CollectionsFilesTable extends Table
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['collection_id'], 'Collections'));

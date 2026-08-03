@@ -12,6 +12,7 @@ use Cake\I18n\FrozenDate;
  */
 class DatesController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -41,7 +42,7 @@ class DatesController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
@@ -53,9 +54,14 @@ class DatesController extends AppController
         ;
         #debug($firstOfMonth); debug($lastOfMonth);
         $this->paginate = [
-            'contain' => ['Users', 'Votes'],
-            'order' => ['Dates.begin ASC'],
-            'conditions' => [
+            'limit' => 200,
+        ];
+
+        $query = $this->Dates
+            ->find()
+            ->contain(['Users', 'Votes'])
+            ->order(['Dates.begin ASC'])
+            ->where([
                 'OR' => [
                     [
                         'Dates.begin >=' => $firstOfMonth,
@@ -65,10 +71,8 @@ class DatesController extends AppController
                     ],
                 ],
                 ['Dates.title LIKE' => '%' . $sword . '%'],
-            ],
-            'limit' => 200
-        ];
-        $dates = $this->paginate($this->Dates);
+            ]);
+        $dates = $this->paginate($query);
 
         $this->set(compact('dates', 'sword'));
         $this->set('_serialize', ['dates']);
@@ -78,7 +82,7 @@ class DatesController extends AppController
      * View method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
@@ -155,7 +159,7 @@ class DatesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -198,8 +202,8 @@ class DatesController extends AppController
      * Edit method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -238,7 +242,7 @@ class DatesController extends AppController
      * Delete method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -266,8 +270,8 @@ class DatesController extends AppController
      * Publishs a date onto the remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function publish($id = null)
     {
@@ -302,8 +306,8 @@ class DatesController extends AppController
      * Unpublishs a date on the remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function unpublish($id = null)
     {
@@ -336,8 +340,8 @@ class DatesController extends AppController
      * Downloads a remote ics file from remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function download($id = null)
     {
@@ -366,8 +370,8 @@ class DatesController extends AppController
      *
      * @param string|null $date Date id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($date = null, $user = null, $template = 'share')
     {

@@ -49,37 +49,38 @@ class LocationsTable extends AbstractTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         $validator
-            ->allowEmpty('text');
+            ->allowEmptyString('text');
 
         $validator
-            ->allowEmpty('url');
+            ->allowEmptyString('url');
 
         $validator
             ->email('email')
-            ->allowEmpty('email');
+            ->allowEmptyString('email');
 
         $validator
             ->requirePresence('address', 'create')
-            ->notEmpty('address');
+            ->notEmptyString('address');
 
         $validator
             ->requirePresence('city', 'create')
-            ->notEmpty('city');
+            ->notEmptyString('city');
 
         $validator
             ->requirePresence('zip', 'create')
-            ->notEmpty('zip');
+            ->notEmptyString('zip');
 
         return $validator;
     }
@@ -90,6 +91,7 @@ class LocationsTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));

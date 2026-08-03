@@ -25,7 +25,7 @@ class CollectionsFile extends Entity
      *
      * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'collection_id' => false,
         'file_id' => false

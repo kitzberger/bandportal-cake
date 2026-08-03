@@ -32,6 +32,7 @@ class AppView extends View
      *
      * e.g. `$this->loadHelper('Html');`
      */
+    #[\Override]
     public function initialize(): void
     {
         // All option values should match the corresponding options for `GlideFilter`.

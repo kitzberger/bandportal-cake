@@ -12,7 +12,7 @@ class GithubComponent extends Component
      *
      * @var array
      */
-    public $components = ['RequestHandler', 'Flash'];
+    public array $components = ['Flash'];
 
     /**
      * Initialize properties.
