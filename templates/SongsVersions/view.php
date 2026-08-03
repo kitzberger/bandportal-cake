@@ -29,7 +29,7 @@
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('User') ?></th>
-            <td><?= $songsVersion->has('user') ? $this->Html->link($songsVersion->user->username, ['controller' => 'Users', 'action' => 'view', $songsVersion->user->id]) : '' ?></td>
+            <td><?= $songsVersion->hasValue('user') ? $this->Html->link($songsVersion->user->username, ['controller' => 'Users', 'action' => 'view', $songsVersion->user->id]) : '' ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Created') ?></th>
@@ -41,7 +41,7 @@
         </tr>
         <tr>
             <th scope="row"><?= __('Song') ?></th>
-            <td><?= $songsVersion->has('song') ? $this->Html->link($songsVersion->song->title, ['controller' => 'Songs', 'action' => 'view', $songsVersion->song->id]) : '' ?></td>
+            <td><?= $songsVersion->hasValue('song') ? $this->Html->link($songsVersion->song->title, ['controller' => 'Songs', 'action' => 'view', $songsVersion->song->id]) : '' ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Length') ?></th>

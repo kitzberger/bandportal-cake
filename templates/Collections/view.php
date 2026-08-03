@@ -30,7 +30,7 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $collection->has('user') ? $this->element('username', ['user' => $collection->user]) : '' ?></td>
+            <td><?= $collection->hasValue('user') ? $this->element('username', ['user' => $collection->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Created') ?></th>
@@ -74,9 +74,9 @@
             <tr class="item item-<?= $file->getType() ?>">
                 <td class="index"><?= $i++ ?></td>
                 <td>
-                    <?= $file->has('date') ? __('Date') . ': ' . $this->Html->link($file->date->title, ['controller' => 'Dates', 'action' => 'view', $file->date->id]) : '' ?>
-                    <?= $file->has('idea') ? __('Idea') . ': ' . $this->Html->link($file->idea->title, ['controller' => 'Ideas', 'action' => 'view', $file->idea->id]) : '' ?>
-                    <?= $file->has('song') ? __('Song') . ': ' . $this->Html->link($file->song->title, ['controller' => 'Songs', 'action' => 'view', $file->song->id]) : '' ?>
+                    <?= $file->hasValue('date') ? __('Date') . ': ' . $this->Html->link($file->date->title, ['controller' => 'Dates', 'action' => 'view', $file->date->id]) : '' ?>
+                    <?= $file->hasValue('idea') ? __('Idea') . ': ' . $this->Html->link($file->idea->title, ['controller' => 'Ideas', 'action' => 'view', $file->idea->id]) : '' ?>
+                    <?= $file->hasValue('song') ? __('Song') . ': ' . $this->Html->link($file->song->title, ['controller' => 'Songs', 'action' => 'view', $file->song->id]) : '' ?>
                 </td>
                 <td>
                     <?= $this->Html->link(__($file->title), ['controller' => 'Files', 'action' => 'view', $file->id]) ?>

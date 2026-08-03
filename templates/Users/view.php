@@ -47,9 +47,9 @@
             <tr>
                 <td><?= h($comments->id) ?></td>
                 <td>
-                    <?= $comments->has('date') ? $this->Html->link($comments->date->title, ['controller' => 'Dates', 'action' => 'view', $comments->date_id]) : '' ?>
-                    <?= $comments->has('idea') ? $this->Html->link($comments->idea->title, ['controller' => 'Ideas', 'action' => 'view', $comments->idea_id]) : '' ?>
-                    <?= $comments->has('song') ? $this->Html->link($comments->song->title, ['controller' => 'Songs', 'action' => 'view', $comments->song_id]) : '' ?>
+                    <?= $comments->hasValue('date') ? $this->Html->link($comments->date->title, ['controller' => 'Dates', 'action' => 'view', $comments->date_id]) : '' ?>
+                    <?= $comments->hasValue('idea') ? $this->Html->link($comments->idea->title, ['controller' => 'Ideas', 'action' => 'view', $comments->idea_id]) : '' ?>
+                    <?= $comments->hasValue('song') ? $this->Html->link($comments->song->title, ['controller' => 'Songs', 'action' => 'view', $comments->song_id]) : '' ?>
                 </td>
                 <td><?= h($comments->text) ?></td>
                 <td><?= h($comments->created) ?></td>
@@ -112,9 +112,9 @@
             <tr>
                 <td><?= h($files->id) ?></td>
                 <td>
-                    <?= $files->has('date') ? $this->Html->link($files->date->title, ['controller' => 'Dates', 'action' => 'view', $files->date_id]) : '' ?>
-                    <?= $files->has('idea') ? $this->Html->link($files->idea->title, ['controller' => 'Ideas', 'action' => 'view', $files->idea_id]) : '' ?>
-                    <?= $files->has('song') ? $this->Html->link($files->song->title, ['controller' => 'Songs', 'action' => 'view', $files->song_id]) : '' ?>
+                    <?= $files->hasValue('date') ? $this->Html->link($files->date->title, ['controller' => 'Dates', 'action' => 'view', $files->date_id]) : '' ?>
+                    <?= $files->hasValue('idea') ? $this->Html->link($files->idea->title, ['controller' => 'Ideas', 'action' => 'view', $files->idea_id]) : '' ?>
+                    <?= $files->hasValue('song') ? $this->Html->link($files->song->title, ['controller' => 'Songs', 'action' => 'view', $files->song_id]) : '' ?>
                 </td>
                 <td><?= h($files->title) ?></td>
                 <td><?= h($files->file) ?></td>
@@ -200,8 +200,8 @@
             <tr>
                 <td><?= h($votes->id) ?></td>
                 <td>
-                    <?= $votes->has('date') ? $this->Html->link($votes->date->title, ['controller' => 'Dates', 'action' => 'view', $votes->date_id]) : '' ?>
-                    <?= $votes->has('idea') ? $this->Html->link($votes->idea->title, ['controller' => 'Ideas', 'action' => 'view', $votes->idea_id]) : '' ?>
+                    <?= $votes->hasValue('date') ? $this->Html->link($votes->date->title, ['controller' => 'Dates', 'action' => 'view', $votes->date_id]) : '' ?>
+                    <?= $votes->hasValue('idea') ? $this->Html->link($votes->idea->title, ['controller' => 'Ideas', 'action' => 'view', $votes->idea_id]) : '' ?>
                 </td>
                 <td><?= h($votes->vote) ?></td>
                 <td><?= h($votes->created) ?></td>

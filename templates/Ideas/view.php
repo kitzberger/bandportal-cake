@@ -23,7 +23,7 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $idea->has('user') ? $this->element('username', ['user' => $idea->user]) : '' ?></td>
+            <td><?= $idea->hasValue('user') ? $this->element('username', ['user' => $idea->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Created') ?></th>

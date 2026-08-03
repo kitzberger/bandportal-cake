@@ -29,7 +29,7 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $song->has('user') ? $this->element('username', ['user' => $song->user]) : '' ?></td>
+            <td><?= $song->hasValue('user') ? $this->element('username', ['user' => $song->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Created') ?></th>

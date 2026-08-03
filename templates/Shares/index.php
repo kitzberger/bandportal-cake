@@ -35,13 +35,13 @@
         <tbody>
             <?php foreach ($shares as $share): ?>
             <tr>
-                <td><?= $share->has('user') ? $this->element('username', ['user' => $share->user]) : '' ?></td>
+                <td><?= $share->hasValue('user') ? $this->element('username', ['user' => $share->user]) : '' ?></td>
                 <td>
-                    <?= $share->has('date') ? __('Date') . ': ' . $this->Html->link($share->date->title, ['controller' => 'Dates', 'action' => 'view', $share->date->id]) : '' ?>
-                    <?= $share->has('idea') ? __('Idea') . ': ' . $this->Html->link($share->idea->title, ['controller' => 'Ideas', 'action' => 'view', $share->idea->id]) : '' ?>
-                    <?= $share->has('song') ? __('Song') . ': ' . $this->Html->link($share->song->title, ['controller' => 'Songs', 'action' => 'view', $share->song->id]) : '' ?>
-                    <?= $share->has('collection') ? __('Collection') . ': ' . $this->Html->link($share->collection->title, ['controller' => 'Collections', 'action' => 'view', $share->collection->id]) : '' ?>
-                    <?= $share->has('file') ? __('File') . ': ' . $this->Html->link($share->file->title, ['controller' => 'Files', 'action' => 'view', $share->file->id]) : '' ?>
+                    <?= $share->hasValue('date') ? __('Date') . ': ' . $this->Html->link($share->date->title, ['controller' => 'Dates', 'action' => 'view', $share->date->id]) : '' ?>
+                    <?= $share->hasValue('idea') ? __('Idea') . ': ' . $this->Html->link($share->idea->title, ['controller' => 'Ideas', 'action' => 'view', $share->idea->id]) : '' ?>
+                    <?= $share->hasValue('song') ? __('Song') . ': ' . $this->Html->link($share->song->title, ['controller' => 'Songs', 'action' => 'view', $share->song->id]) : '' ?>
+                    <?= $share->hasValue('collection') ? __('Collection') . ': ' . $this->Html->link($share->collection->title, ['controller' => 'Collections', 'action' => 'view', $share->collection->id]) : '' ?>
+                    <?= $share->hasValue('file') ? __('File') . ': ' . $this->Html->link($share->file->title, ['controller' => 'Files', 'action' => 'view', $share->file->id]) : '' ?>
                 </td>
                 <td><?= h($share->expire_date) ?></td>
                 <td><?= h($share->created) ?></td>

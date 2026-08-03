@@ -16,8 +16,8 @@
             <?php foreach ($songsVersions as $songsVersion): ?>
             <tr>
                 <td><?= $this->Number->format($songsVersion->id) ?></td>
-                <td><?= $songsVersion->has('user') ? $this->Html->link($songsVersion->user->username, ['controller' => 'Users', 'action' => 'view', $songsVersion->user->id]) : '' ?></td>
-                <td><?= $songsVersion->has('song') ? $this->Html->link($songsVersion->song->title, ['controller' => 'Songs', 'action' => 'view', $songsVersion->song->id]) : '' ?></td>
+                <td><?= $songsVersion->hasValue('user') ? $this->Html->link($songsVersion->user->username, ['controller' => 'Users', 'action' => 'view', $songsVersion->user->id]) : '' ?></td>
+                <td><?= $songsVersion->hasValue('song') ? $this->Html->link($songsVersion->song->title, ['controller' => 'Songs', 'action' => 'view', $songsVersion->song->id]) : '' ?></td>
                 <td><?= h($songsVersion->title) ?></td>
                 <td><?= h($songsVersion->created) ?></td>
                 <td><?= h($songsVersion->modified) ?></td>
