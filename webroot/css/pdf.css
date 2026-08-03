@@ -1,4 +1,19 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+/*
+  We've placed the google font into webroot/font/ because only then
+  it's being loaded correctly by the PDF library.
+*/
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../font/SourceCodePro-Regular.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Source Code Pro';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../font/SourceCodePro-Bold.ttf') format('truetype');
+}
 
 h1, h2, h3 { font-weight: normal; }
 
