@@ -60,7 +60,7 @@ class DatesController extends AppController
         $query = $this->Dates
             ->find()
             ->contain(['Users', 'Votes'])
-            ->order(['Dates.begin ASC'])
+            ->orderBy(['Dates.begin ASC'])
             ->where([
                 'OR' => [
                     [
@@ -177,8 +177,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list')->limit(200)->order('username');
-        $locations = $this->Dates->Locations->find('list')->limit(200)->order('title');
+        $users = $this->Dates->Users->find('list')->limit(200)->orderBy('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->orderBy('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }
@@ -217,8 +217,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list')->limit(200)->order('username');
-        $locations = $this->Dates->Locations->find('list')->limit(200)->order('title');
+        $users = $this->Dates->Users->find('list')->limit(200)->orderBy('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->orderBy('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }

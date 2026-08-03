@@ -56,7 +56,7 @@ class SongsController extends AppController
         $query = $this->Songs
             ->find()
             ->contain(['Users', 'SongsVersions'])
-            ->order(['Songs.modified DESC'])
+            ->orderBy(['Songs.modified DESC'])
             ->where([
                 'OR' => [
                     'Songs.title LIKE' => '%' . $sword . '%',

@@ -54,7 +54,7 @@ class CollectionsController extends AppController
                 'Files',
                 'Songs' => fn(\Cake\ORM\Query $q) => $q->where(['is_pseudo' => false]),
             ])
-            ->order(['Collections.modified DESC'])
+            ->orderBy(['Collections.modified DESC'])
             ->where(['Collections.title LIKE' => '%' . $sword . '%']);
         $collections = $this->paginate($query);
 
@@ -253,7 +253,7 @@ class CollectionsController extends AppController
     private function getOrderedAssociationList(string $association, Collection $collection, bool $showAll = true): array
     {
         $field = strtolower($association);
-        $all = $this->Collections->{$association}->find('list')->limit(200)->order('title ASC')->toArray();
+        $all = $this->Collections->{$association}->find('list')->limit(200)->orderBy('title ASC')->toArray();
 
         if (empty($collection->{$field})) {
             return $showAll ? $all : [];

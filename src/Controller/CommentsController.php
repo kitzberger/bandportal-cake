@@ -51,7 +51,7 @@ class CommentsController extends AppController
         $query = $this->Comments
             ->find()
             ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'])
-            ->order(['Comments.modified DESC']);
+            ->orderBy(['Comments.modified DESC']);
         $comments = $this->paginate($query);
 
         $this->set(compact('comments'));
@@ -109,12 +109,12 @@ class CommentsController extends AppController
                 $this->Flash->error(__('The comment could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Comments->Users->find('list')->limit(200)->order('username');
-        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin');
-        $ideas = $this->Comments->Ideas->find('list')->limit(200)->order('title');
-        $songs = $this->Comments->Songs->find('list')->limit(200)->order('title');
-        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->order('Songs.title')->contain(['Songs']);
-        $collections = $this->Comments->Collections->find('list')->limit(200)->order('title');
+        $users = $this->Comments->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Comments->Ideas->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Comments->Songs->find('list')->limit(200)->orderBy('title');
+        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('Songs.title')->contain(['Songs']);
+        $collections = $this->Comments->Collections->find('list')->limit(200)->orderBy('title');
         $this->set(compact('comment', 'users', 'dates', 'ideas', 'songs', 'songsVersions', 'collections'));
         $this->set('_serialize', ['comment']);
     }
@@ -157,12 +157,12 @@ class CommentsController extends AppController
                 $this->Flash->error(__('The comment could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Comments->Users->find('list')->limit(200)->order('username');
-        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin');
-        $ideas = $this->Comments->Ideas->find('list')->limit(200)->order('title');
-        $songs = $this->Comments->Songs->find('list')->limit(200)->order('title');
-        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->order('Songs.title')->contain(['Songs']);
-        $collections = $this->Comments->Collections->find('list')->limit(200)->order('title');
+        $users = $this->Comments->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Comments->Ideas->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Comments->Songs->find('list')->limit(200)->orderBy('title');
+        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('Songs.title')->contain(['Songs']);
+        $collections = $this->Comments->Collections->find('list')->limit(200)->orderBy('title');
         $this->set(compact('comment', 'users', 'dates', 'ideas', 'songs', 'songsVersions', 'collections'));
         $this->set('_serialize', ['comment']);
     }

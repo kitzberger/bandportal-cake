@@ -48,7 +48,7 @@ class IdeasController extends AppController
         $query = $this->Ideas
             ->find()
             ->contain(['Users'])
-            ->order(['Ideas.modified DESC'])
+            ->orderBy(['Ideas.modified DESC'])
             ->where(['Ideas.title LIKE' => '%' . $sword . '%']);
         $ideas = $this->paginate($query);
 
@@ -108,7 +108,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list')->limit(200)->order('username');
+        $users = $this->Ideas->Users->find('list')->limit(200)->orderBy('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }
@@ -135,7 +135,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list')->limit(200)->order('username');
+        $users = $this->Ideas->Users->find('list')->limit(200)->orderBy('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }

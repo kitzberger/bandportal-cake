@@ -51,7 +51,7 @@ class VotesController extends AppController
         $query = $this->Votes
             ->find()
             ->contain(['Users', 'Dates', 'Ideas'])
-            ->order(['Votes.modified DESC']);
+            ->orderBy(['Votes.modified DESC']);
         $votes = $this->paginate($query);
 
         $this->set(compact('votes'));
@@ -120,9 +120,9 @@ class VotesController extends AppController
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list')->limit(200)->order('username');
-        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin');
-        $ideas = $this->Votes->Ideas->find('list')->limit(200)->order('title');
+        $users = $this->Votes->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->orderBy('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
         $this->viewBuilder()->setOption('serialize', ['vote']);
     }
@@ -160,9 +160,9 @@ class VotesController extends AppController
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list')->limit(200)->order('username');
-        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin DESC');
-        $ideas = $this->Votes->Ideas->find('list')->limit(200)->order('title');
+        $users = $this->Votes->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin DESC');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->orderBy('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
         $this->viewBuilder()->setOption('serialize', ['vote']);
     }

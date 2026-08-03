@@ -48,7 +48,7 @@ class FilesController extends AppController
         $query = $this->Files
             ->find()
             ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'])
-            ->order(['Files.modified DESC'])
+            ->orderBy(['Files.modified DESC'])
             ->where(['Files.title LIKE' => '%' . $sword . '%']);
         $files = $this->paginate($query);
 
@@ -102,11 +102,11 @@ class FilesController extends AppController
                 }
             }
         }
-        $users = $this->Files->Users->find('list')->limit(100)->order('username');
-        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(100)->order('begin DESC');
-        $ideas = $this->Files->Ideas->find('list')->limit(200)->order('title');
-        $collections = $this->Files->Collections->find('list')->limit(200)->order('title');
-        $songs = $this->Files->Songs->find('list')->limit(200)->order('title');
+        $users = $this->Files->Users->find('list')->limit(100)->orderBy('username');
+        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(100)->orderBy('begin DESC');
+        $ideas = $this->Files->Ideas->find('list')->limit(200)->orderBy('title');
+        $collections = $this->Files->Collections->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Files->Songs->find('list')->limit(200)->orderBy('title');
         $this->set(compact('file', 'users', 'dates', 'ideas', 'songs', 'collections'));
         $this->set('_serialize', ['file']);
     }
@@ -183,16 +183,16 @@ class FilesController extends AppController
                 $this->Flash->error(__('The file could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Files->Users->find('list')->limit(200)->order('username');
-        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(200)->order('begin DESC');
-        $ideas = $this->Files->Ideas->find('list')->limit(200)->order('title');
-        $collections = $this->Files->Collections->find('list')->limit(200)->order('title');
+        $users = $this->Files->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin DESC');
+        $ideas = $this->Files->Ideas->find('list')->limit(200)->orderBy('title');
+        $collections = $this->Files->Collections->find('list')->limit(200)->orderBy('title');
         $songs = $songsVersions = [];
         if ($file->isAudio()) {
-            $songs = $this->Files->Songs->find('list')->limit(200)->order('title');
+            $songs = $this->Files->Songs->find('list')->limit(200)->orderBy('title');
             $songsVersions = $this->Files->SongsVersions->find('list', valueField: 'combinedTitle')
                 ->limit(200)
-                ->order('Songs.title')
+                ->orderBy('Songs.title')
                 ->contain(['Songs']);
             if ($file->song_id) {
                 $songsVersions->where(['song_id' => $file->song_id]);

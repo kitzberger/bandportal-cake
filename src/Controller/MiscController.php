@@ -47,18 +47,18 @@ class MiscController extends AppController
                     ['Dates.status' => Date::STATUS_CONFIRMED],
                 ],
             ])
-            ->order('Dates.begin ASC')
+            ->orderBy('Dates.begin ASC')
             ->limit(5);
         $songs = $songsTable->find()
-            ->order('modified DESC')
+            ->orderBy('modified DESC')
             ->limit(5);
         $ideas = $ideasTable->find()
             ->contain(['Comments'])
-            ->order('modified DESC')
+            ->orderBy('modified DESC')
             ->limit(5);
         $collections = $collectionsTable->find()
             ->contain(['Files', 'Songs'])
-            ->order('modified DESC')
+            ->orderBy('modified DESC')
             ->limit(5);
 
         $this->set(compact('dates', 'songs', 'ideas', 'collections'));

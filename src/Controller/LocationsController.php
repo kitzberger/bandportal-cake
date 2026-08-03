@@ -42,7 +42,7 @@ class LocationsController extends AppController
         $query = $this->Locations
             ->find()
             ->contain(['Users'])
-            ->order(['Locations.modified DESC'])
+            ->orderBy(['Locations.modified DESC'])
             ->where([
                 'OR' => [
                     'Locations.title LIKE' => '%' . $sword . '%',

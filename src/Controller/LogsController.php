@@ -53,7 +53,7 @@ class LogsController extends AppController
         $query = $this->Logs
             ->find()
             ->contain($this->contain)
-            ->order(['Logs.created DESC']);
+            ->orderBy(['Logs.created DESC']);
         $logs = $this->paginate($query);
 
         $this->set(compact('logs'));

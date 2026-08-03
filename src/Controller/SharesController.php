@@ -59,11 +59,11 @@ class SharesController extends AppController
             }
             $this->Flash->error(__('The share could not be saved. Please, try again.'));
         }
-        $users = $this->Shares->Users->find('list')->limit(9999)->order('username');
-        $dates = $this->Shares->Dates->find('list', valueField: 'combinedTitle')->limit(9999)->order('begin DESC');
-        $ideas = $this->Shares->Ideas->find('list')->limit(9999)->order('title');
-        $songs = $this->Shares->Songs->find('list')->limit(9999)->order('title');
-        $collections = $this->Shares->Collections->find('list')->limit(9999)->order('title');
+        $users = $this->Shares->Users->find('list')->limit(9999)->orderBy('username');
+        $dates = $this->Shares->Dates->find('list', valueField: 'combinedTitle')->limit(9999)->orderBy('begin DESC');
+        $ideas = $this->Shares->Ideas->find('list')->limit(9999)->orderBy('title');
+        $songs = $this->Shares->Songs->find('list')->limit(9999)->orderBy('title');
+        $collections = $this->Shares->Collections->find('list')->limit(9999)->orderBy('title');
         $files = $this->Shares->Files->find('list')->limit(9999);
         $this->set(compact('share', 'users', 'dates', 'ideas', 'songs', 'collections', 'files'));
     }
@@ -89,12 +89,12 @@ class SharesController extends AppController
             }
             $this->Flash->error(__('The share could not be saved. Please, try again.'));
         }
-        $users = $this->Shares->Users->find('list')->limit(9999)->order('username');
-        $dates = $this->Shares->Dates->find('list', valueField: 'combinedTitle')->limit(9999)->order('begin DESC');
-        $ideas = $this->Shares->Ideas->find('list')->limit(9999)->order('title');
-        $songs = $this->Shares->Songs->find('list')->limit(9999)->order('title');
-        $collections = $this->Shares->Collections->find('list')->limit(9999)->order('title');
-        $files = $this->Shares->Files->find('list')->limit(9999)->order('title');
+        $users = $this->Shares->Users->find('list')->limit(9999)->orderBy('username');
+        $dates = $this->Shares->Dates->find('list', valueField: 'combinedTitle')->limit(9999)->orderBy('begin DESC');
+        $ideas = $this->Shares->Ideas->find('list')->limit(9999)->orderBy('title');
+        $songs = $this->Shares->Songs->find('list')->limit(9999)->orderBy('title');
+        $collections = $this->Shares->Collections->find('list')->limit(9999)->orderBy('title');
+        $files = $this->Shares->Files->find('list')->limit(9999)->orderBy('title');
         $this->set(compact('share', 'users', 'dates', 'ideas', 'songs', 'collections', 'files'));
     }
 

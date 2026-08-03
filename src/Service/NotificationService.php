@@ -55,7 +55,7 @@ class NotificationService
         $logsTable = TableRegistry::getTableLocator()->get('Logs');
         $logs = $logsTable->find()
             ->contain($this->contain)
-            ->order(['Logs.created DESC'])
+            ->orderBy(['Logs.created DESC'])
             ->where([
                 'Logs.user_id !=' => $user['id'],
                 'Logs.created >' => $user['notified'] ?: '2000-01-01',
