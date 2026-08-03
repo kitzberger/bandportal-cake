@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Mailer\AppMailerTrait;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\Mailer\Mailer;
 
 /**
  * Application Controller
@@ -17,6 +17,8 @@ use Cake\Mailer\Mailer;
  */
 class AppController extends Controller
 {
+    use AppMailerTrait;
+
     protected array $enabledFeatures = [];
 
     /**
@@ -123,28 +125,5 @@ class AppController extends Controller
         }
 
         return false;
-    }
-
-    protected function sendMail($subject, $message, $to, $template = 'default', $viewVars = [])
-    {
-        $mailer = new Mailer('default');
-
-        $from = $mailer->getMessage()->getFrom();
-        if (empty($from)) {
-            throw new \Exception('Missing default from address in config!');
-        }
-
-        if ($message !== null) {
-            $mailer->getMessage()->setBodyHtml($message);
-        } else {
-            $mailer->viewBuilder()->setTemplate($template);
-            $mailer->setViewVars($viewVars);
-        }
-
-        $mailer
-            ->setEmailFormat('html')
-            ->setTo($to)
-            ->setSubject($subject)
-            ->deliver();
     }
 }

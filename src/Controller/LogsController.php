@@ -76,38 +76,4 @@ class LogsController extends AppController
         $this->set('log', $log);
         $this->set('_serialize', ['log']);
     }
-
-    /**
-     * Notify method (called from CLI)
-     *
-     * @param \App\Table\User $user
-     * @return string
-     */
-    public function notify($user)
-    {
-        $logs = $this->Logs->find()
-            ->contain($this->contain)
-            ->order(['Logs.created DESC'])
-            ->where([
-                'Logs.user_id !=' => $user['id'],
-                'Logs.created >' => $user['notified'] ?: '2000-01-01',
-                'Logs.share_id IS' => null // don't include log entries about shares
-            ]);
-
-        if ($logs->count()) {
-            $this->sendMail(
-                __('Notification'),
-                null,
-                $user['email'],
-                'notify',
-                [
-                    'user' => $user,
-                    'logs' => $logs,
-                ]
-            );
-        }
-
-
-        return $logs->count();
-    }
 }
