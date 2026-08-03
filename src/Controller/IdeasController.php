@@ -70,17 +70,15 @@ class IdeasController extends AppController
         $passiveUsers = $usersTable->find()
             ->where(['Users.is_passive' => true]);
 
-        $idea = $this->Ideas->get($id, [
-            'contain' => [
-                'Users',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Files' => ['sort' => ['Files.modified' => 'DESC']],
-                'Votes' => ['sort' => ['Votes.modified' => 'DESC']],
-                'Files.Users',
-                'Comments.Users',
-                'Votes.Users',
-                'Shares.Users',
-            ]
+        $idea = $this->Ideas->get($id, contain: [
+            'Users',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Files' => ['sort' => ['Files.modified' => 'DESC']],
+            'Votes' => ['sort' => ['Votes.modified' => 'DESC']],
+            'Files.Users',
+            'Comments.Users',
+            'Votes.Users',
+            'Shares.Users',
         ]);
 
         $this->set('idea', $idea);
@@ -121,9 +119,7 @@ class IdeasController extends AppController
      */
     public function edit($id = null)
     {
-        $idea = $this->Ideas->get($id, [
-            'contain' => []
-        ]);
+        $idea = $this->Ideas->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $idea = $this->Ideas->patchEntity($idea, $this->request->getData());
             if ($this->Ideas->save($idea)) {
@@ -172,11 +168,9 @@ class IdeasController extends AppController
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $idea = $this->Ideas->get($idea, []);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $idea = $this->Ideas->get($idea);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('An idea is now shared with you!');

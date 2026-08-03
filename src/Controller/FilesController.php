@@ -64,9 +64,7 @@ class FilesController extends AppController
      */
     public function view($id = null)
     {
-        $file = $this->Files->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections', 'Collections.Users']
-        ]);
+        $file = $this->Files->get($id, contain: ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections', 'Collections.Users']);
 
         $this->set('file', $file);
         $this->set('_serialize', ['file']);
@@ -169,9 +167,7 @@ class FilesController extends AppController
      */
     public function edit($id = null)
     {
-        $file = $this->Files->get($id, [
-            'contain' => ['Collections']
-        ]);
+        $file = $this->Files->get($id, contain: ['Collections']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $file = $this->Files->patchEntity($file, $this->request->getData());
             if ($this->Files->save($file)) {

@@ -66,9 +66,7 @@ class CommentsController extends AppController
      */
     public function view($id = null)
     {
-        $comment = $this->Comments->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']
-        ]);
+        $comment = $this->Comments->get($id, contain: ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']);
 
         $this->set('comment', $comment);
         $this->set('_serialize', ['comment']);
@@ -127,9 +125,7 @@ class CommentsController extends AppController
      */
     public function edit($id = null)
     {
-        $comment = $this->Comments->get($id, [
-            'contain' => []
-        ]);
+        $comment = $this->Comments->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $comment = $this->Comments->patchEntity($comment, $this->request->getData());
             if ($this->Comments->save($comment)) {

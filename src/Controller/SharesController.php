@@ -35,9 +35,7 @@ class SharesController extends AppController
      */
     public function view($id = null)
     {
-        $share = $this->Shares->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'Collections', 'Files']
-        ]);
+        $share = $this->Shares->get($id, contain: ['Users', 'Dates', 'Ideas', 'Songs', 'Collections', 'Files']);
 
         $this->set('share', $share);
     }
@@ -77,9 +75,7 @@ class SharesController extends AppController
      */
     public function edit($id = null)
     {
-        $share = $this->Shares->get($id, [
-            'contain' => []
-        ]);
+        $share = $this->Shares->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $share = $this->Shares->patchEntity($share, $this->request->getData());
             if ($this->Shares->save($share)) {

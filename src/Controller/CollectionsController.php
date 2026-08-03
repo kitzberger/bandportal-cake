@@ -78,30 +78,28 @@ class CollectionsController extends AppController
      */
     public function view($id = null)
     {
-        $collection = $this->Collections->get($id, [
-            'contain' => [
-                'Users',
-                'Files',
-                'Files.Users',
-                'Files.Songs',
-                'Files.Ideas',
-                'Files.Dates',
-                'Songs',
-                'Songs.Files' => [
-                    'conditions' => ['is_public' => 1],
-                    'sort' => ['Files.created' => 'DESC']
-                ],
-                'Songs.Users',
-                'Songs.SongsVersions',
-                'Songs.SongsVersions.Files' => [
-                    'conditions' => ['is_public' => 1],
-                    'sort' => ['Files.created' => 'DESC']
-                ],
-                'Shares',
-                'Shares.Users',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Comments.Users',
-            ]
+        $collection = $this->Collections->get($id, contain: [
+            'Users',
+            'Files',
+            'Files.Users',
+            'Files.Songs',
+            'Files.Ideas',
+            'Files.Dates',
+            'Songs',
+            'Songs.Files' => [
+                'conditions' => ['is_public' => 1],
+                'sort' => ['Files.created' => 'DESC']
+            ],
+            'Songs.Users',
+            'Songs.SongsVersions',
+            'Songs.SongsVersions.Files' => [
+                'conditions' => ['is_public' => 1],
+                'sort' => ['Files.created' => 'DESC']
+            ],
+            'Shares',
+            'Shares.Users',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Comments.Users',
         ]);
 
         $usersTable = $this->fetchTable('Users');
@@ -139,11 +137,9 @@ class CollectionsController extends AppController
         if (is_null($id)) {
             $collection = $this->Collections->newEmptyEntity();
         } else {
-            $collection = $this->Collections->get($id, [
-                'contain' => [
-                    'Files' => ['sort' => 'sorting ASC'],
-                    'Songs' => ['sort' => 'sorting ASC'],
-                ]
+            $collection = $this->Collections->get($id, contain: [
+                'Files' => ['sort' => 'sorting ASC'],
+                'Songs' => ['sort' => 'sorting ASC'],
             ]);
             $collection->setNew(true);
             $collection->id = null;
@@ -220,11 +216,9 @@ class CollectionsController extends AppController
      */
     public function edit($id = null)
     {
-        $collection = $this->Collections->get($id, [
-            'contain' => [
-                'Files' => ['sort' => 'sorting ASC'],
-                'Songs' => ['sort' => 'sorting ASC'],
-            ]
+        $collection = $this->Collections->get($id, contain: [
+            'Files' => ['sort' => 'sorting ASC'],
+            'Songs' => ['sort' => 'sorting ASC'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $collection = $this->Collections->patchEntity(
@@ -307,11 +301,9 @@ class CollectionsController extends AppController
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $collection = $this->Collections->get($collection, []);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $collection = $this->Collections->get($collection);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('A collection is now shared with you!');

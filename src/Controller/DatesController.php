@@ -93,19 +93,17 @@ class DatesController extends AppController
         $passiveUsers = $usersTable->find()
             ->where(['Users.is_passive' => true]);
 
-        $date = $this->Dates->get($id, [
-            'contain' => [
-                'Users',
-                'Locations',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Files',
-                'Votes',
-                'Comments.Users',
-                'Files.Users',
-                'Votes.Users',
-                'Shares',
-                'Shares.Users'
-            ]
+        $date = $this->Dates->get($id, contain: [
+            'Users',
+            'Locations',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Files',
+            'Votes',
+            'Comments.Users',
+            'Files.Users',
+            'Votes.Users',
+            'Shares',
+            'Shares.Users'
         ]);
 
         $thisDaysBegin = $date->begin->startOfDay();
@@ -192,9 +190,7 @@ class DatesController extends AppController
      */
     public function edit($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => ['Locations']
-        ]);
+        $date = $this->Dates->get($id, contain: ['Locations']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $date = $this->Dates->patchEntity($date, $this->request->getData());
             if ($this->Dates->save($date)) {
@@ -260,9 +256,7 @@ class DatesController extends AppController
      */
     public function publish($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => ['Locations']
-        ]);
+        $date = $this->Dates->get($id, contain: ['Locations']);
 
         if ($this->enabledFeatures['remoteCalendar']) {
             $uri = null;
@@ -330,9 +324,7 @@ class DatesController extends AppController
      */
     public function download($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => []
-        ]);
+        $date = $this->Dates->get($id, contain: []);
 
         if ($this->enabledFeatures['remoteCalendar']) {
             $uri = null;
@@ -363,13 +355,9 @@ class DatesController extends AppController
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $date = $this->Dates->get($date, [
-            'contain' => ['Locations']
-        ]);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $date = $this->Dates->get($date, contain: ['Locations']);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('A date is now shared with you!');

@@ -63,9 +63,7 @@ class LocationsController extends AppController
      */
     public function view($id = null)
     {
-        $location = $this->Locations->get($id, [
-            'contain' => ['Users']
-        ]);
+        $location = $this->Locations->get($id, contain: ['Users']);
 
         $this->set('location', $location);
         $this->set('_serialize', ['location']);
@@ -103,9 +101,7 @@ class LocationsController extends AppController
      */
     public function edit($id = null)
     {
-        $location = $this->Locations->get($id, [
-            'contain' => []
-        ]);
+        $location = $this->Locations->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $location = $this->Locations->patchEntity($location, $this->request->getData());
             if ($this->Locations->save($location)) {

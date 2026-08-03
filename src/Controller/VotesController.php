@@ -66,9 +66,7 @@ class VotesController extends AppController
      */
     public function view($id = null)
     {
-        $vote = $this->Votes->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas']
-        ]);
+        $vote = $this->Votes->get($id, contain: ['Users', 'Dates', 'Ideas']);
 
         $this->set('vote', $vote);
         $this->set('_serialize', ['vote']);
@@ -99,9 +97,7 @@ class VotesController extends AppController
                 $vote = $this->Votes->patchEntity($vote, $data);
             }
             if ($this->Votes->save($vote)) {
-                $vote = $this->Votes->get($vote['id'], [
-                    'contain' => ['Users', 'Dates', 'Ideas', 'Dates.Votes', 'Ideas.Votes']
-                ]);
+                $vote = $this->Votes->get($vote['id'], contain: ['Users', 'Dates', 'Ideas', 'Dates.Votes', 'Ideas.Votes']);
                 $usersTable = $this->fetchTable('Users');
                 $users = $usersTable->find('all');
                 if ($this->request->is('ajax')) {
@@ -135,15 +131,11 @@ class VotesController extends AppController
      */
     public function edit($id = null)
     {
-        $vote = $this->Votes->get($id, [
-            'contain' => []
-        ]);
+        $vote = $this->Votes->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $vote = $this->Votes->patchEntity($vote, $this->request->getData());
             if ($this->Votes->save($vote)) {
-                $vote = $this->Votes->get($vote['id'], [
-                    'contain' => ['Users', 'Dates', 'Ideas']
-                ]);
+                $vote = $this->Votes->get($vote['id'], contain: ['Users', 'Dates', 'Ideas']);
 
                 if ($this->request->is('ajax')) {
                     $this->set('vote', $vote);

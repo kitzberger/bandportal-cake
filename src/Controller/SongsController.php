@@ -80,18 +80,16 @@ class SongsController extends AppController
      */
     public function view($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => [
-                'Users',
-                'Comments' => ['sort' => ['Comments.created' => 'ASC']],
-                'Comments.Users',
-                'Files' => ['sort' => ['Files.created' => 'DESC']],
-                'Files.Users',
-                'Files.Collections',
-                'Collections.Users',
-                'SongsVersions',
-                'SongsVersions.Files' => ['conditions' => ['is_public' => 1]],
-            ]
+        $song = $this->Songs->get($id, contain: [
+            'Users',
+            'Comments' => ['sort' => ['Comments.created' => 'ASC']],
+            'Comments.Users',
+            'Files' => ['sort' => ['Files.created' => 'DESC']],
+            'Files.Users',
+            'Files.Collections',
+            'Collections.Users',
+            'SongsVersions',
+            'SongsVersions.Files' => ['conditions' => ['is_public' => 1]],
         ]);
 
         $this->set('song', $song);
@@ -195,9 +193,7 @@ class SongsController extends AppController
      */
     public function edit($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => []
-        ]);
+        $song = $this->Songs->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $song = $this->Songs->patchEntity($song, $this->request->getData());
             if ($this->Songs->save($song)) {

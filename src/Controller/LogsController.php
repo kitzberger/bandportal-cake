@@ -68,9 +68,7 @@ class LogsController extends AppController
      */
     public function view($id = null)
     {
-        $log = $this->Logs->get($id, [
-            'contain' => $this->contain
-        ]);
+        $log = $this->Logs->get($id, contain: $this->contain);
 
         $this->set('log', $log);
         $this->set('_serialize', ['log']);
