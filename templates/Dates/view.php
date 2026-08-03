@@ -73,7 +73,7 @@
         <?php if ($remoteCalendarEnabled): ?>
         <tr>
             <th><?= __('Calendar entry') ?></th>
-            <td><?= $this->Html->link($date->uri, ['controller' => 'Dates', 'action' => 'download', $date->id]) ?></td>
+            <td><?= $date->uri ? $this->Html->link($date->uri, ['controller' => 'Dates', 'action' => 'download', $date->id]) : '' ?></td>
         </tr>
         <?php endif; ?>
         <tr>
