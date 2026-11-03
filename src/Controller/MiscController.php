@@ -19,8 +19,6 @@ class MiscController extends AppController
             if (in_array($action, ['dashboard'])) {
                 return true;
             }
-        } else {
-            $this->redirect(['controller' => 'pages', 'action' => 'welcome']);
         }
 
         return parent::isAuthorized($user);

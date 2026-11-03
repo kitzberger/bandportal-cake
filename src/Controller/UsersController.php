@@ -43,7 +43,14 @@ class UsersController extends AppController
             $result = $this->Authentication->getResult();
             if ($result && $result->isValid()) {
                 $redirectUrl = urldecode((string) $this->request->getData('redirect')) ?: null;
-                return $this->redirect($this->Authentication->getLoginRedirect($redirectUrl) ?? ['controller' => 'Misc', 'action' => 'dashboard']);
+                if ($redirectUrl) {
+                    return $this->redirect($redirectUrl);
+                }
+                $user = $result->getData();
+                if (!empty($user['is_active'])) {
+                    return $this->redirect(['controller' => 'Misc', 'action' => 'dashboard']);
+                }
+                return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'welcome']);
             }
             $this->Flash->error(__('Invalid username or password, try again'));
         }

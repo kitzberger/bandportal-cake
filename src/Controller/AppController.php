@@ -107,7 +107,14 @@ class AppController extends Controller
             return true;
         }
 
-        $this->Flash->error(__('Access denied'));
+        // Let logged-in non-admin users reach the home + welcome pages.
+        // Inactive users are funnelled home -> welcome in PagesController::beforeRender.
+        if ($this->request->getParam('controller') === 'Pages'
+            && $this->request->getParam('action') === 'display'
+            && in_array($this->request->getParam('pass.0'), ['home', 'welcome'], true)
+        ) {
+            return true;
+        }
 
         // Default deny
         return false;
