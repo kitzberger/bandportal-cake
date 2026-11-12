@@ -2,6 +2,7 @@
 
 namespace App\Model\Table;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
 
@@ -65,6 +66,29 @@ class SongsTable extends AbstractTable
             'foreignKey' => 'song_id',
             'propertyName' => 'versions', // override ugly default property name 'songs_versions'
         ]);
+    }
+
+    /**
+     * Skip saving existing songs when only the junction metadata
+     * (`_joinData`) is dirty. This prevents the Timestamp and Footprint
+     * behaviors from bumping `modified`/`modified_by` when a song is
+     * merely linked to or re-ordered within a collection.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity the entity to be saved
+     * @param array<string, mixed> $options The options to use when saving.
+     */
+    #[\Override]
+    public function save(EntityInterface $entity, array $options = []): EntityInterface|false
+    {
+        if (!$entity->isNew()) {
+            $dirty = $entity->getDirty();
+            $nonTrivialDirty = array_diff($dirty, ['modified', 'modified_by', '_joinData']);
+            if (empty($nonTrivialDirty)) {
+                return $entity;
+            }
+        }
+
+        return parent::save($entity, $options);
     }
 
     /**

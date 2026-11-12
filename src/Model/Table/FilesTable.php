@@ -73,6 +73,29 @@ class FilesTable extends AbstractTable
     }
 
     /**
+     * Skip saving existing files when only the junction metadata
+     * (`_joinData`) is dirty. This prevents the Timestamp and Footprint
+     * behaviors from bumping `modified`/`modified_by` when a file is
+     * merely linked to or re-ordered within a collection.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity the entity to be saved
+     * @param array<string, mixed> $options The options to use when saving.
+     */
+    #[\Override]
+    public function save(EntityInterface $entity, array $options = []): EntityInterface|false
+    {
+        if (!$entity->isNew()) {
+            $dirty = $entity->getDirty();
+            $nonTrivialDirty = array_diff($dirty, ['modified', 'modified_by', '_joinData']);
+            if (empty($nonTrivialDirty)) {
+                return $entity;
+            }
+        }
+
+        return parent::save($entity, $options);
+    }
+
+    /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
