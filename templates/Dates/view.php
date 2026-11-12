@@ -45,11 +45,11 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $date->has('user') ? $this->element('username', ['user' => $date->user]) : '' ?></td>
+            <td><?= $date->hasValue('user') ? $this->element('username', ['user' => $date->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Location') ?></th>
-            <td><?= $date->has('location') ? $this->Html->link($date->location->title, ['controller' => 'Locations', 'action' => 'view', $date->location->id]) : '' ?></td>
+            <td><?= $date->hasValue('location') ? $this->Html->link($date->location->title, ['controller' => 'Locations', 'action' => 'view', $date->location->id]) : '' ?></td>
         </tr>
         <?php
             if ($date->is_fullday) {
@@ -73,7 +73,7 @@
         <?php if ($remoteCalendarEnabled): ?>
         <tr>
             <th><?= __('Calendar entry') ?></th>
-            <td><?= $this->Html->link($date->uri, ['controller' => 'Dates', 'action' => 'download', $date->id]) ?></td>
+            <td><?= $date->uri ? $this->Html->link($date->uri, ['controller' => 'Dates', 'action' => 'download', $date->id]) : '' ?></td>
         </tr>
         <?php endif; ?>
         <tr>

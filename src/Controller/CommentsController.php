@@ -9,6 +9,7 @@ namespace App\Controller;
  */
 class CommentsController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -43,15 +44,14 @@ class CommentsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'],
-            'order' => ['Comments.modified DESC'],
-        ];
-        $comments = $this->paginate($this->Comments);
+        $query = $this->Comments
+            ->find()
+            ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']);
+        $comments = $this->paginate($query, ['order' => ['Comments.modified' => 'DESC']]);
 
         $this->set(compact('comments'));
         $this->set('_serialize', ['comments']);
@@ -61,14 +61,12 @@ class CommentsController extends AppController
      * View method
      *
      * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $comment = $this->Comments->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']
-        ]);
+        $comment = $this->Comments->get($id, contain: ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections']);
 
         $this->set('comment', $comment);
         $this->set('_serialize', ['comment']);
@@ -77,7 +75,7 @@ class CommentsController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -108,12 +106,12 @@ class CommentsController extends AppController
                 $this->Flash->error(__('The comment could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Comments->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Comments->Dates->find('list', ['limit' => 200, 'order' => 'begin', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Comments->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
-        $songs = $this->Comments->Songs->find('list', ['limit' => 200, 'order' => 'title']);
-        $songsVersions = $this->Comments->SongsVersions->find('list', ['limit' => 200, 'order' => 'Songs.title', 'valueField' => 'combinedTitle'])->contain(['Songs']);
-        $collections = $this->Comments->Collections->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Comments->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Comments->Ideas->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Comments->Songs->find('list')->limit(200)->orderBy('title');
+        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('Songs.title')->contain(['Songs']);
+        $collections = $this->Comments->Collections->find('list')->limit(200)->orderBy('title');
         $this->set(compact('comment', 'users', 'dates', 'ideas', 'songs', 'songsVersions', 'collections'));
         $this->set('_serialize', ['comment']);
     }
@@ -122,14 +120,12 @@ class CommentsController extends AppController
      * Edit method
      *
      * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $comment = $this->Comments->get($id, [
-            'contain' => []
-        ]);
+        $comment = $this->Comments->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $comment = $this->Comments->patchEntity($comment, $this->request->getData());
             if ($this->Comments->save($comment)) {
@@ -156,12 +152,12 @@ class CommentsController extends AppController
                 $this->Flash->error(__('The comment could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Comments->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Comments->Dates->find('list', ['limit' => 200, 'order' => 'begin', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Comments->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
-        $songs = $this->Comments->Songs->find('list', ['limit' => 200, 'order' => 'title']);
-        $songsVersions = $this->Comments->SongsVersions->find('list', ['limit' => 200, 'order' => 'Songs.title', 'valueField' => 'combinedTitle'])->contain(['Songs']);
-        $collections = $this->Comments->Collections->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Comments->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Comments->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Comments->Ideas->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Comments->Songs->find('list')->limit(200)->orderBy('title');
+        $songsVersions = $this->Comments->SongsVersions->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('Songs.title')->contain(['Songs']);
+        $collections = $this->Comments->Collections->find('list')->limit(200)->orderBy('title');
         $this->set(compact('comment', 'users', 'dates', 'ideas', 'songs', 'songsVersions', 'collections'));
         $this->set('_serialize', ['comment']);
     }
@@ -170,7 +166,7 @@ class CommentsController extends AppController
      * Delete method
      *
      * @param string|null $id Comment id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)

@@ -9,6 +9,7 @@ namespace App\Controller;
  */
 class IdeasController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -38,19 +39,17 @@ class IdeasController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => ['Users'],
-            'order' => ['Ideas.modified DESC'],
-            'conditions' => ['Ideas.title LIKE' => '%' . $sword . '%'],
-        ];
-
-        $ideas = $this->paginate($this->Ideas);
+        $query = $this->Ideas
+            ->find()
+            ->contain(['Users'])
+            ->where(['Ideas.title LIKE' => '%' . $sword . '%']);
+        $ideas = $this->paginate($query, ['order' => ['Ideas.modified' => 'DESC']]);
 
         $this->set(compact('ideas', 'sword'));
         $this->set('_serialize', ['ideas']);
@@ -60,40 +59,26 @@ class IdeasController extends AppController
      * View method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
         $usersTable = $this->fetchTable('Users');
-        $users = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_active' => true,
-                ],
-            ]
-        );
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $users = $usersTable->find()
+            ->where(['Users.is_active' => true]);
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
-        $idea = $this->Ideas->get($id, [
-            'contain' => [
-                'Users',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Files' => ['sort' => ['Files.modified' => 'DESC']],
-                'Votes' => ['sort' => ['Votes.modified' => 'DESC']],
-                'Files.Users',
-                'Comments.Users',
-                'Votes.Users',
-                'Shares.Users',
-            ]
+        $idea = $this->Ideas->get($id, contain: [
+            'Users',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Files' => ['sort' => ['Files.modified' => 'DESC']],
+            'Votes' => ['sort' => ['Votes.modified' => 'DESC']],
+            'Files.Users',
+            'Comments.Users',
+            'Votes.Users',
+            'Shares.Users',
         ]);
 
         $this->set('idea', $idea);
@@ -105,7 +90,7 @@ class IdeasController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -120,7 +105,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list', ['limit' => 200, 'order' => 'username']);
+        $users = $this->Ideas->Users->find('list')->limit(200)->orderBy('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }
@@ -129,14 +114,12 @@ class IdeasController extends AppController
      * Edit method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $idea = $this->Ideas->get($id, [
-            'contain' => []
-        ]);
+        $idea = $this->Ideas->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $idea = $this->Ideas->patchEntity($idea, $this->request->getData());
             if ($this->Ideas->save($idea)) {
@@ -147,7 +130,7 @@ class IdeasController extends AppController
                 $this->Flash->error(__('The idea could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Ideas->Users->find('list', ['limit' => 200, 'order' => 'username']);
+        $users = $this->Ideas->Users->find('list')->limit(200)->orderBy('username');
         $this->set(compact('idea', 'users'));
         $this->set('_serialize', ['idea']);
     }
@@ -156,7 +139,7 @@ class IdeasController extends AppController
      * Delete method
      *
      * @param string|null $id Idea id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -177,19 +160,17 @@ class IdeasController extends AppController
      *
      * @param string|null $idea Idea id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($idea = null, $user = null, $template = 'share')
     {
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $idea = $this->Ideas->get($idea, []);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $idea = $this->Ideas->get($idea);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('An idea is now shared with you!');

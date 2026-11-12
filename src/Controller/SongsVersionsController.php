@@ -11,6 +11,7 @@ namespace App\Controller;
  */
 class SongsVersionsController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -47,10 +48,10 @@ class SongsVersionsController extends AppController
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Songs'],
-        ];
-        $songsVersions = $this->paginate($this->SongsVersions);
+        $query = $this->SongsVersions
+            ->find()
+            ->contain(['Users', 'Songs']);
+        $songsVersions = $this->paginate($query);
 
         $this->set(compact('songsVersions'));
     }
@@ -64,15 +65,13 @@ class SongsVersionsController extends AppController
      */
     public function view($id = null)
     {
-        $songsVersion = $this->SongsVersions->get($id, [
-            'contain' => [
-                'Users',
-                'Songs',
-                'Comments' => ['sort' => ['Comments.created' => 'ASC']],
-                'Comments.Users',
-                'Files' => ['sort' => ['Files.created' => 'DESC']],
-                'Files.Users',
-            ],
+        $songsVersion = $this->SongsVersions->get($id, contain: [
+            'Users',
+            'Songs',
+            'Comments' => ['sort' => ['Comments.created' => 'ASC']],
+            'Comments.Users',
+            'Files' => ['sort' => ['Files.created' => 'DESC']],
+            'Files.Users',
         ]);
 
         $this->set('songsVersion', $songsVersion);
@@ -103,8 +102,8 @@ class SongsVersionsController extends AppController
                 $songsVersion->song_id = $this->request->getQuery('song_id');
             }
         }
-        $users = $this->SongsVersions->Users->find('list', ['limit' => 200]);
-        $songs = $this->SongsVersions->Songs->find('list', ['limit' => 200]);
+        $users = $this->SongsVersions->Users->find('list')->limit(200);
+        $songs = $this->SongsVersions->Songs->find('list')->limit(200);
         $this->set(compact('songsVersion', 'users', 'songs'));
     }
 
@@ -117,9 +116,7 @@ class SongsVersionsController extends AppController
      */
     public function edit($id = null)
     {
-        $songsVersion = $this->SongsVersions->get($id, [
-            'contain' => ['Songs'],
-        ]);
+        $songsVersion = $this->SongsVersions->get($id, contain: ['Songs']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $songsVersion = $this->SongsVersions->patchEntity($songsVersion, $this->request->getData());
             if ($this->SongsVersions->save($songsVersion)) {
@@ -132,8 +129,8 @@ class SongsVersionsController extends AppController
             }
             $this->Flash->error(__('The songs version could not be saved. Please, try again.'));
         }
-        $users = $this->SongsVersions->Users->find('list', ['limit' => 200]);
-        $songs = $this->SongsVersions->Songs->find('list', ['limit' => 200]);
+        $users = $this->SongsVersions->Users->find('list')->limit(200);
+        $songs = $this->SongsVersions->Songs->find('list')->limit(200);
         $this->set(compact('songsVersion', 'users', 'songs'));
     }
 

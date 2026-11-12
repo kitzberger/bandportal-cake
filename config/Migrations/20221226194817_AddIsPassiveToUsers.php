@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddIsPassiveToUsers extends AbstractMigration
+class AddIsPassiveToUsers extends BaseMigration
 {
     /**
      * Change Method.

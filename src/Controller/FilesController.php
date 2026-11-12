@@ -9,6 +9,7 @@ namespace App\Controller;
  */
 class FilesController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -38,18 +39,17 @@ class FilesController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'],
-            'order' => ['Files.modified DESC'],
-            'conditions' => ['Files.title LIKE' => '%' . $sword . '%'],
-        ];
-        $files = $this->paginate($this->Files);
+        $query = $this->Files
+            ->find()
+            ->contain(['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections'])
+            ->where(['Files.title LIKE' => '%' . $sword . '%']);
+        $files = $this->paginate($query, ['order' => ['Files.modified' => 'DESC']]);
 
         $this->set(compact('files', 'sword'));
         $this->set('_serialize', ['files']);
@@ -59,14 +59,12 @@ class FilesController extends AppController
      * View method
      *
      * @param string|null $id File id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $file = $this->Files->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections', 'Collections.Users']
-        ]);
+        $file = $this->Files->get($id, contain: ['Users', 'Dates', 'Ideas', 'Songs', 'SongsVersions', 'Collections', 'Collections.Users']);
 
         $this->set('file', $file);
         $this->set('_serialize', ['file']);
@@ -75,7 +73,7 @@ class FilesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -101,11 +99,11 @@ class FilesController extends AppController
                 }
             }
         }
-        $users = $this->Files->Users->find('list', ['limit' => 100, 'order' => 'username']);
-        $dates = $this->Files->Dates->find('list', ['limit' => 100, 'order' => 'begin DESC', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Files->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
-        $collections = $this->Files->Collections->find('list', ['limit' => 200, 'order' => 'title']);
-        $songs = $this->Files->Songs->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Files->Users->find('list')->limit(100)->orderBy('username');
+        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(100)->orderBy('begin DESC');
+        $ideas = $this->Files->Ideas->find('list')->limit(200)->orderBy('title');
+        $collections = $this->Files->Collections->find('list')->limit(200)->orderBy('title');
+        $songs = $this->Files->Songs->find('list')->limit(200)->orderBy('title');
         $this->set(compact('file', 'users', 'dates', 'ideas', 'songs', 'collections'));
         $this->set('_serialize', ['file']);
     }
@@ -113,7 +111,7 @@ class FilesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function upload()
     {
@@ -125,7 +123,7 @@ class FilesController extends AppController
             } catch (\Exception $e) {
                 $filename = false;
                 $this->set('error', __('File upload failed! Message:') . ' ' . $e->getMessage());
-                $this->response->header('HTTP/1.1 500', 'Internal Server Error');
+                $this->response = $this->response->withStatus(500);
             }
 
             if ($filename) {
@@ -152,7 +150,7 @@ class FilesController extends AppController
                     }
                 } else {
                     $this->set('error', __('The file could not be saved. Please, try again.'));
-                    $this->response->header('HTTP/1.1 500', 'Internal Server Error');
+                    $this->response = $this->response->withStatus(500);
                 }
             }
         }
@@ -164,14 +162,12 @@ class FilesController extends AppController
      * Edit method
      *
      * @param string|null $id File id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $file = $this->Files->get($id, [
-            'contain' => ['Collections']
-        ]);
+        $file = $this->Files->get($id, contain: ['Collections']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $file = $this->Files->patchEntity($file, $this->request->getData());
             if ($this->Files->save($file)) {
@@ -182,21 +178,17 @@ class FilesController extends AppController
                 $this->Flash->error(__('The file could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Files->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Files->Dates->find('list', ['limit' => 200, 'order' => 'begin DESC', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Files->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
-        $collections = $this->Files->Collections->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Files->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Files->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin DESC');
+        $ideas = $this->Files->Ideas->find('list')->limit(200)->orderBy('title');
+        $collections = $this->Files->Collections->find('list')->limit(200)->orderBy('title');
         $songs = $songsVersions = [];
         if ($file->isAudio()) {
-            $songs = $this->Files->Songs->find('list', ['limit' => 200, 'order' => 'title']);
-            $songsVersions = $this->Files->SongsVersions->find(
-                'list',
-                [
-                    'limit' => 200,
-                    'order' => 'Songs.title',
-                    'valueField' => 'combinedTitle',
-                ]
-            )->contain(['Songs']);
+            $songs = $this->Files->Songs->find('list')->limit(200)->orderBy('title');
+            $songsVersions = $this->Files->SongsVersions->find('list', valueField: 'combinedTitle')
+                ->limit(200)
+                ->orderBy('Songs.title')
+                ->contain(['Songs']);
             if ($file->song_id) {
                 $songsVersions->where(['song_id' => $file->song_id]);
             }
@@ -259,7 +251,7 @@ class FilesController extends AppController
      * Delete method
      *
      * @param string|null $id File id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)

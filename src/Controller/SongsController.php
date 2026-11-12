@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use CakePdf\View\PdfView;
+
 /**
  * Songs Controller
  *
@@ -9,12 +11,15 @@ namespace App\Controller;
  */
 class SongsController extends AppController
 {
+    #[\Override]
     public function initialize(): void
     {
         parent::initialize();
         $this->loadComponent('Github');
+        $this->addViewClasses([PdfView::class]);
     }
 
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -45,23 +50,22 @@ class SongsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => ['Users', 'SongsVersions'],
-            'order' => ['Songs.modified DESC'],
-            'conditions' => [
+        $query = $this->Songs
+            ->find()
+            ->contain(['Users', 'SongsVersions'])
+            ->where([
                 'OR' => [
                     'Songs.title LIKE' => '%' . $sword . '%',
                     'Songs.artist LIKE' => '%' . $sword . '%',
                 ],
-            ],
-        ];
-        $songs = $this->paginate($this->Songs);
+            ]);
+        $songs = $this->paginate($query, ['order' => ['Songs.modified' => 'DESC']]);
 
         $this->set(compact('songs', 'sword'));
         $this->set('_serialize', ['songs']);
@@ -71,23 +75,21 @@ class SongsController extends AppController
      * View method
      *
      * @param string|null $id Song id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => [
-                'Users',
-                'Comments' => ['sort' => ['Comments.created' => 'ASC']],
-                'Comments.Users',
-                'Files' => ['sort' => ['Files.created' => 'DESC']],
-                'Files.Users',
-                'Files.Collections',
-                'Collections.Users',
-                'SongsVersions',
-                'SongsVersions.Files' => ['conditions' => ['is_public' => 1]],
-            ]
+        $song = $this->Songs->get($id, contain: [
+            'Users',
+            'Comments' => ['sort' => ['Comments.created' => 'ASC']],
+            'Comments.Users',
+            'Files' => ['sort' => ['Files.created' => 'DESC']],
+            'Files.Users',
+            'Files.Collections',
+            'Collections.Users',
+            'SongsVersions',
+            'SongsVersions.Files' => ['conditions' => ['is_public' => 1]],
         ]);
 
         $this->set('song', $song);
@@ -98,7 +100,7 @@ class SongsController extends AppController
      * Render method
      *
      * @param string|null $id Song id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function display($id = null)
@@ -129,7 +131,7 @@ class SongsController extends AppController
     /**
      * Sync method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function sync()
@@ -162,7 +164,7 @@ class SongsController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -177,7 +179,7 @@ class SongsController extends AppController
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Songs->Users->find('list', ['limit' => 200]);
+        $users = $this->Songs->Users->find('list')->limit(200);
         $this->set(compact('song', 'users'));
         $this->set('_serialize', ['song']);
     }
@@ -186,14 +188,12 @@ class SongsController extends AppController
      * Edit method
      *
      * @param string|null $id Song id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $song = $this->Songs->get($id, [
-            'contain' => []
-        ]);
+        $song = $this->Songs->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $song = $this->Songs->patchEntity($song, $this->request->getData());
             if ($this->Songs->save($song)) {
@@ -205,7 +205,7 @@ class SongsController extends AppController
                 $this->Flash->error(__('The song could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Songs->Users->find('list', ['limit' => 200]);
+        $users = $this->Songs->Users->find('list')->limit(200);
         $this->set(compact('song', 'users'));
         $this->set('_serialize', ['song']);
     }
@@ -214,7 +214,7 @@ class SongsController extends AppController
      * Delete method
      *
      * @param string|null $id Song id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)

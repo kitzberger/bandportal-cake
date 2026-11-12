@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddSharesTable extends AbstractMigration
+class AddSharesTable extends BaseMigration
 {
     /**
      * Change Method.

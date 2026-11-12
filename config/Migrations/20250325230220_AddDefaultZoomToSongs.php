@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddDefaultZoomToSongs extends AbstractMigration
+class AddDefaultZoomToSongs extends BaseMigration
 {
     /**
      * Change Method.

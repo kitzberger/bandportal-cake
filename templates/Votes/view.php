@@ -12,13 +12,13 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $vote->has('user') ? $this->element('username', ['user' => $vote->user]) : '' ?></td>
+            <td><?= $vote->hasValue('user') ? $this->element('username', ['user' => $vote->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Record') ?></th>
             <td>
-                <?= $vote->has('date') ? $this->Html->link($vote->date->title, ['controller' => 'Dates', 'action' => 'view', $vote->date->id]) : '' ?>
-                <?= $vote->has('idea') ? $this->Html->link($vote->idea->title, ['controller' => 'Ideas', 'action' => 'view', $vote->idea->id]) : '' ?>
+                <?= $vote->hasValue('date') ? $this->Html->link($vote->date->title, ['controller' => 'Dates', 'action' => 'view', $vote->date->id]) : '' ?>
+                <?= $vote->hasValue('idea') ? $this->Html->link($vote->idea->title, ['controller' => 'Ideas', 'action' => 'view', $vote->idea->id]) : '' ?>
             </td>
         </tr>
         <tr>

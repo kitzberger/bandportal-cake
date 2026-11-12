@@ -73,27 +73,51 @@ class FilesTable extends AbstractTable
     }
 
     /**
+     * Skip saving existing files when only the junction metadata
+     * (`_joinData`) is dirty. This prevents the Timestamp and Footprint
+     * behaviors from bumping `modified`/`modified_by` when a file is
+     * merely linked to or re-ordered within a collection.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity the entity to be saved
+     * @param array<string, mixed> $options The options to use when saving.
+     */
+    #[\Override]
+    public function save(EntityInterface $entity, array $options = []): EntityInterface|false
+    {
+        if (!$entity->isNew()) {
+            $dirty = $entity->getDirty();
+            $nonTrivialDirty = array_diff($dirty, ['modified', 'modified_by', '_joinData']);
+            if (empty($nonTrivialDirty)) {
+                return $entity;
+            }
+        }
+
+        return parent::save($entity, $options);
+    }
+
+    /**
      * Default validation rules.
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('user_id', 'create')
-            ->notEmpty('user_id');
+            ->notEmptyString('user_id');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         $validator
             ->requirePresence('file', 'create')
-            ->notEmpty('file');
+            ->notEmptyFile('file');
 
         $validator
             ->allowEmptyString('regions')
@@ -116,6 +140,7 @@ class FilesTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -140,7 +165,7 @@ class FilesTable extends AbstractTable
         $diff = $this->getDiff($entity, ['title', 'file', 'is_public']);
 
         if (!empty($diff)) {
-            $logs = \Cake\ORM\TableRegistry::get('Logs');
+            $logs = \Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
             $log = $logs->newEntity([
                 'user_id' => $entity->modified_by,
                 'file_id' => $entity->id,

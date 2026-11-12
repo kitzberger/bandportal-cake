@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Entity\Collection;
+use CakePdf\View\PdfView;
 
 /**
  * Collections Controller
@@ -11,6 +12,14 @@ use App\Model\Entity\Collection;
  */
 class CollectionsController extends AppController
 {
+    #[\Override]
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->addViewClasses([PdfView::class]);
+    }
+
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -40,22 +49,21 @@ class CollectionsController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
         $sword = $this->request->getQuery('sword');
 
-        $this->paginate = [
-            'contain' => [
+        $query = $this->Collections
+            ->find()
+            ->contain([
                 'Users',
                 'Files',
-                'Songs' => fn(\Cake\ORM\Query $q) => $q->find('all', ['conditions' => ['is_pseudo' => false]]),
-            ],
-            'order' => ['Collections.modified DESC'],
-            'conditions' => ['Collections.title LIKE' => '%' . $sword . '%'],
-        ];
-        $collections = $this->paginate($this->Collections);
+                'Songs' => fn(\Cake\ORM\Query $q) => $q->where(['is_pseudo' => false]),
+            ])
+            ->where(['Collections.title LIKE' => '%' . $sword . '%']);
+        $collections = $this->paginate($query, ['order' => ['Collections.modified' => 'DESC']]);
 
         $this->set(compact('collections', 'sword'));
         $this->set('_serialize', ['collections']);
@@ -65,46 +73,38 @@ class CollectionsController extends AppController
      * View method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $collection = $this->Collections->get($id, [
-            'contain' => [
-                'Users',
-                'Files',
-                'Files.Users',
-                'Files.Songs',
-                'Files.Ideas',
-                'Files.Dates',
-                'Songs',
-                'Songs.Files' => [
-                    'conditions' => ['is_public' => 1],
-                    'sort' => ['Files.created' => 'DESC']
-                ],
-                'Songs.Users',
-                'Songs.SongsVersions',
-                'Songs.SongsVersions.Files' => [
-                    'conditions' => ['is_public' => 1],
-                    'sort' => ['Files.created' => 'DESC']
-                ],
-                'Shares',
-                'Shares.Users',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Comments.Users',
-            ]
+        $collection = $this->Collections->get($id, contain: [
+            'Users',
+            'Files',
+            'Files.Users',
+            'Files.Songs',
+            'Files.Ideas',
+            'Files.Dates',
+            'Songs',
+            'Songs.Files' => [
+                'conditions' => ['is_public' => 1],
+                'sort' => ['Files.created' => 'DESC']
+            ],
+            'Songs.Users',
+            'Songs.SongsVersions',
+            'Songs.SongsVersions.Files' => [
+                'conditions' => ['is_public' => 1],
+                'sort' => ['Files.created' => 'DESC']
+            ],
+            'Shares',
+            'Shares.Users',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Comments.Users',
         ]);
 
         $usersTable = $this->fetchTable('Users');
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
         $zoom = (float)($this->request->getQuery('zoom') ?? 1.0);
 
@@ -129,7 +129,7 @@ class CollectionsController extends AppController
      * Add/copy method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function add($id = null)
@@ -137,13 +137,11 @@ class CollectionsController extends AppController
         if (is_null($id)) {
             $collection = $this->Collections->newEmptyEntity();
         } else {
-            $collection = $this->Collections->get($id, [
-                'contain' => [
-                    'Files' => ['sort' => 'sorting ASC'],
-                    'Songs' => ['sort' => 'sorting ASC'],
-                ]
+            $collection = $this->Collections->get($id, contain: [
+                'Files' => ['sort' => 'sorting ASC'],
+                'Songs' => ['sort' => 'sorting ASC'],
             ]);
-            $collection->isNew(true);
+            $collection->setNew(true);
             $collection->id = null;
             $collection->user_id = null;
             $collection->title .= ' (copy)';
@@ -160,7 +158,7 @@ class CollectionsController extends AppController
                 $this->Flash->error(__('The collection could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Collections->Users->find('list', ['limit' => 200]);
+        $users = $this->Collections->Users->find('list')->limit(200);
         $files = $this->getOrderedAssociationList('Files', $collection, false);
         $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
@@ -170,7 +168,7 @@ class CollectionsController extends AppController
     /**
      * Set version for a song within a collection
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function setSongVersion()
     {
@@ -192,9 +190,10 @@ class CollectionsController extends AppController
             $collectionSong = $collectionsSongsTable->patchEntity($collectionSong, $this->request->getData());
             if ($collectionsSongsTable->save($collectionSong)) {
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('collectionSong', $collectionSong);
+                    $this->set('_serialize', ['collectionSong']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The version has been set.'));
                     return $this->redirect(['action' => 'view', $collectionSong->collection_id]);
@@ -212,16 +211,14 @@ class CollectionsController extends AppController
      * Edit method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $collection = $this->Collections->get($id, [
-            'contain' => [
-                'Files' => ['sort' => 'sorting ASC'],
-                'Songs' => ['sort' => 'sorting ASC'],
-            ]
+        $collection = $this->Collections->get($id, contain: [
+            'Files' => ['sort' => 'sorting ASC'],
+            'Songs' => ['sort' => 'sorting ASC'],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $collection = $this->Collections->patchEntity(
@@ -244,7 +241,7 @@ class CollectionsController extends AppController
                 $this->Flash->error(__('The collection could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Collections->Users->find('list', ['limit' => 200]);
+        $users = $this->Collections->Users->find('list')->limit(200);
         $files = $this->getOrderedAssociationList('Files', $collection, false);
         $songs = $this->getOrderedAssociationList('Songs', $collection);
         $this->set(compact('collection', 'users', 'files', 'songs'));
@@ -257,7 +254,7 @@ class CollectionsController extends AppController
     private function getOrderedAssociationList(string $association, Collection $collection, bool $showAll = true): array
     {
         $field = strtolower($association);
-        $all = $this->Collections->{$association}->find('list', ['limit' => 200, 'order' => 'title ASC'])->toArray();
+        $all = $this->Collections->{$association}->find('list')->limit(200)->orderBy('title ASC')->toArray();
 
         if (empty($collection->{$field})) {
             return $showAll ? $all : [];
@@ -275,7 +272,7 @@ class CollectionsController extends AppController
      * Delete method
      *
      * @param string|null $id Collection id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -296,19 +293,17 @@ class CollectionsController extends AppController
      *
      * @param string|null $collection Collection id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($collection = null, $user = null, $template = 'share')
     {
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $collection = $this->Collections->get($collection, []);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $collection = $this->Collections->get($collection);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('A collection is now shared with you!');

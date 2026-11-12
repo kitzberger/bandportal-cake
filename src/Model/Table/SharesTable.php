@@ -71,15 +71,16 @@ class SharesTable extends AbstractTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmptyString('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('user_id', 'create')
-            ->notEmpty('user_id');
+            ->notEmptyString('user_id');
 
         $validator
             ->scalar('comment')
@@ -98,6 +99,7 @@ class SharesTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -115,7 +117,7 @@ class SharesTable extends AbstractTable
         $diff = $this->getDiff($entity, ['user_id', 'date_id', 'idea_id', 'song_id', 'collection_id', 'file_id', 'comment', 'expire_date']);
 
         if (!empty($diff)) {
-            $logs = \Cake\ORM\TableRegistry::get('Logs');
+            $logs = \Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
             $log = $logs->newEntity([
                 'user_id' => $entity->modified_by,
                 'share_id' => $entity->id,
@@ -143,23 +145,21 @@ class SharesTable extends AbstractTable
         }
 
         // try to find a share for that record
-        $shares = $this->find('all', [
-            'conditions' => [
+        $shares = $this->find()
+            ->where([
                 'user_id' => $user_id,
                 $type . '_id IN' => $id, // int or array of ints
-            ],
-        ]);
+            ]);
 
         // if no direct share for file/song has been found,
         // try looking for a share for a collection containing that record
         if ($shares->count() === 0 && in_array($type, ['file', 'song'])) {
-            $this->Collections = \Cake\ORM\TableRegistry::get('Collections' . ucfirst($type) . 's');
-            $collections = $this->Collections->find('all', [
-                'contain' => ['Collections'],
-                'conditions' => [
+            $this->Collections = \Cake\ORM\TableRegistry::getTableLocator()->get('Collections' . ucfirst($type) . 's');
+            $collections = $this->Collections->find()
+                ->contain(['Collections'])
+                ->where([
                     $type . '_id' => $id,
-                ]
-            ]);
+                ]);
             if ($collections->count()) {
                 $ids = array_map(fn($item) => $item->collection_id, $collections->toArray());
                 return $this->sharedWithUser('collection', $ids, $user_id);

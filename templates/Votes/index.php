@@ -29,10 +29,10 @@
         <tbody>
             <?php foreach ($votes as $vote): ?>
             <tr>
-                <td><?= $vote->has('user') ? $this->element('username', ['user' => $vote->user]) : '' ?></td>
+                <td><?= $vote->hasValue('user') ? $this->element('username', ['user' => $vote->user]) : '' ?></td>
                 <td>
-                    <?= $vote->has('date') ? __('Date') . ': ' . $this->Html->link($vote->date->title, ['controller' => 'Dates', 'action' => 'view', $vote->date->id]) : '' ?>
-                    <?= $vote->has('idea') ? __('Idea') . ': ' . $this->Html->link($vote->idea->title, ['controller' => 'Ideas', 'action' => 'view', $vote->idea->id]) : '' ?>
+                    <?= $vote->hasValue('date') ? __('Date') . ': ' . $this->Html->link($vote->date->title, ['controller' => 'Dates', 'action' => 'view', $vote->date->id]) : '' ?>
+                    <?= $vote->hasValue('idea') ? __('Idea') . ': ' . $this->Html->link($vote->idea->title, ['controller' => 'Ideas', 'action' => 'view', $vote->idea->id]) : '' ?>
                 </td>
                 <td><?= $this->Number->format($vote->vote) ?></td>
                 <td><?= $this->element('date', ['date' => $vote->created]) ?></td>

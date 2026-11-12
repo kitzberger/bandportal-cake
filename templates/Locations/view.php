@@ -18,7 +18,7 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $location->has('user') ? $this->element('username', ['user' => $location->user]) : '' ?></td>
+            <td><?= $location->hasValue('user') ? $this->element('username', ['user' => $location->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Url') ?></th>

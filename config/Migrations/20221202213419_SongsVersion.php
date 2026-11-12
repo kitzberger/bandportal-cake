@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class SongsVersion extends AbstractMigration
+class SongsVersion extends BaseMigration
 {
     public function up()
     {

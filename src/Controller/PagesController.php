@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Http\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 
 /**
@@ -16,10 +16,11 @@ use Cake\View\Exception\MissingTemplateException;
  */
 class PagesController extends AppController
 {
+    #[\Override]
     public function initialize(): void
     {
         parent::initialize();
-        $this->Auth->allow('display');
+        $this->Authentication->addUnauthenticatedActions(['display']);
     }
 
     /**
@@ -28,12 +29,13 @@ class PagesController extends AppController
      * @param \Cake\Event\EventInterface $event The beforeRender event.
      * @return void
      */
+    #[\Override]
     public function beforeRender(EventInterface $event)
     {
         if ($this->viewBuilder()->getVar('page') === 'home') {
             $this->viewBuilder()->disableAutoLayout();
 
-            if ($user = $this->Auth->User()) {
+            if ($user = $this->Authentication->getIdentity()) {
                 if ($user['is_active']) {
                     $this->redirect(['controller' => 'Misc', 'action' => 'dashboard']);
                 } else {
@@ -47,8 +49,8 @@ class PagesController extends AppController
     /**
      * Displays a view
      *
-     * @return void|\Cake\Network\Response
-     * @throws \Cake\Network\Exception\NotFoundException When the view file could not
+     * @return void|\Cake\Http\Response
+     * @throws \Cake\Http\Exception\NotFoundException When the view file could not
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
     public function display()

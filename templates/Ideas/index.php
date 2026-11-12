@@ -29,7 +29,7 @@
             <?php foreach ($ideas as $idea): ?>
             <tr>
                 <td><?= $this->Html->link($idea->title, ['action' => 'view', $idea->id]) ?></td>
-                <td class="show-for-medium"><?= $idea->has('user') ? $this->element('username', ['user' => $idea->user]) : '' ?></td>
+                <td class="show-for-medium"><?= $idea->hasValue('user') ? $this->element('username', ['user' => $idea->user]) : '' ?></td>
                 <td class="show-for-medium"><?= $this->element('date', ['date' => $idea->created]) ?></td>
                 <td><?= $this->element('date', ['date' => $idea->modified]) ?></td>
             </tr>

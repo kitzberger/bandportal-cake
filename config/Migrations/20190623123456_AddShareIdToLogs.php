@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddShareIdToLogs extends AbstractMigration
+class AddShareIdToLogs extends BaseMigration
 {
     /**
      * Change Method.

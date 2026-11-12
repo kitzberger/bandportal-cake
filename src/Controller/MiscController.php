@@ -10,6 +10,7 @@ use Cake\I18n\FrozenDate;
  */
 class MiscController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -18,8 +19,6 @@ class MiscController extends AppController
             if (in_array($action, ['dashboard'])) {
                 return true;
             }
-        } else {
-            $this->redirect(['controller' => 'pages', 'action' => 'welcome']);
         }
 
         return parent::isAuthorized($user);
@@ -28,7 +27,7 @@ class MiscController extends AppController
     /**
      * Dashboard method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function dashboard()
     {
@@ -38,43 +37,27 @@ class MiscController extends AppController
         $collectionsTable = $this->fetchTable('Collections');
 
         $now = new FrozenDate();
-        $dates = $datesTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Dates.begin >=' => $now,
-                    'OR' => [
-                        ['Dates.status' => Date::STATUS_UNCONFIRMED],
-                        ['Dates.status' => Date::STATUS_CONFIRMED],
-                    ],
+        $dates = $datesTable->find()
+            ->where([
+                'Dates.begin >=' => $now,
+                'OR' => [
+                    ['Dates.status' => Date::STATUS_UNCONFIRMED],
+                    ['Dates.status' => Date::STATUS_CONFIRMED],
                 ],
-                'order' => 'Dates.begin ASC',
-                'limit' => 5,
-            ]
-        );
-        $songs = $songsTable->find(
-            'all',
-            [
-                'order' => 'modified DESC',
-                'limit' => 5,
-            ]
-        );
-        $ideas = $ideasTable->find(
-            'all',
-            [
-                'contain' => ['Comments'],
-                'order' => 'modified DESC',
-                'limit' => 5,
-            ]
-        );
-        $collections = $collectionsTable->find(
-            'all',
-            [
-                'contain' => ['Files', 'Songs'],
-                'order' => 'modified DESC',
-                'limit' => 5,
-            ]
-        );
+            ])
+            ->orderBy('Dates.begin ASC')
+            ->limit(5);
+        $songs = $songsTable->find()
+            ->orderBy('modified DESC')
+            ->limit(5);
+        $ideas = $ideasTable->find()
+            ->contain(['Comments'])
+            ->orderBy('modified DESC')
+            ->limit(5);
+        $collections = $collectionsTable->find()
+            ->contain(['Files', 'Songs'])
+            ->orderBy('modified DESC')
+            ->limit(5);
 
         $this->set(compact('dates', 'songs', 'ideas', 'collections'));
         $this->set('_serialize', ['dates', 'songs', 'ideas', 'collections']);

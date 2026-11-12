@@ -3,39 +3,39 @@
     <table class="vertical-table">
         <tr>
             <th><?= __('User') ?></th>
-            <td><?= $log->has('user') ? $this->element('username', ['user' => $log->user]) : '' ?></td>
+            <td><?= $log->hasValue('user') ? $this->element('username', ['user' => $log->user]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Song') ?></th>
-            <td><?= $log->has('song') ? $this->Html->link($log->song->title, ['controller' => 'Songs', 'action' => 'view', $log->song->id]) : '' ?></td>
+            <td><?= $log->hasValue('song') ? $this->Html->link($log->song->title, ['controller' => 'Songs', 'action' => 'view', $log->song->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Song version') ?></th>
-            <td><?= $log->has('songs_version') ? $this->Html->link($log->songs_version->title, ['controller' => 'SongsVersions', 'action' => 'view', $log->songs_version->id]) : '' ?></td>
+            <td><?= $log->hasValue('songs_version') ? $this->Html->link($log->songs_version->title, ['controller' => 'SongsVersions', 'action' => 'view', $log->songs_version->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Date') ?></th>
-            <td><?= $log->has('date') ? $this->Html->link($log->date->title, ['controller' => 'Dates', 'action' => 'view', $log->date->id]) : '' ?></td>
+            <td><?= $log->hasValue('date') ? $this->Html->link($log->date->title, ['controller' => 'Dates', 'action' => 'view', $log->date->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Idea') ?></th>
-            <td><?= $log->has('idea') ? $this->Html->link($log->idea->title, ['controller' => 'Ideas', 'action' => 'view', $log->idea->id]) : '' ?></td>
+            <td><?= $log->hasValue('idea') ? $this->Html->link($log->idea->title, ['controller' => 'Ideas', 'action' => 'view', $log->idea->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Comment') ?></th>
-            <td><?= $log->has('comment') ? $this->Html->link($log->comment->id, ['controller' => 'Comments', 'action' => 'view', $log->comment->id]) : '' ?></td>
+            <td><?= $log->hasValue('comment') ? $this->Html->link($log->comment->id, ['controller' => 'Comments', 'action' => 'view', $log->comment->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Collection') ?></th>
-            <td><?= $log->has('collection') ? $this->Html->link($log->collection->title, ['controller' => 'Collections', 'action' => 'view', $log->collection->id]) : '' ?></td>
+            <td><?= $log->hasValue('collection') ? $this->Html->link($log->collection->title, ['controller' => 'Collections', 'action' => 'view', $log->collection->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Vote') ?></th>
-            <td><?= $log->has('vote') ? $this->Html->link($log->vote->id, ['controller' => 'Votes', 'action' => 'view', $log->vote->id]) : '' ?></td>
+            <td><?= $log->hasValue('vote') ? $this->Html->link($log->vote->id, ['controller' => 'Votes', 'action' => 'view', $log->vote->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('File') ?></th>
-            <td><?= $log->has('file') ? $this->Html->link($log->file->title, ['controller' => 'Files', 'action' => 'view', $log->file->id]) : '' ?></td>
+            <td><?= $log->hasValue('file') ? $this->Html->link($log->file->title, ['controller' => 'Files', 'action' => 'view', $log->file->id]) : '' ?></td>
         </tr>
         <tr>
             <th><?= __('Id') ?></th>

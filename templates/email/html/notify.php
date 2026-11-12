@@ -36,33 +36,33 @@
         $count++;
 ?>
         <tr class="<?= ($count%2==0 ? 'even' : 'odd') ?>">
-            <td><?= $log->has('user') ? h($log->user->username) : '' ?></td>
+            <td><?= $log->hasValue('user') ? h($log->user->username) : '' ?></td>
             <td>
                 <?php
-                    if ($log->has('song')) {
+                    if ($log->hasValue('song')) {
                         echo __('Song') . ': ' . $this->Html->link($log->song->title, ['_full' => true, 'controller' => 'Songs', 'action' => 'view', $log->song->id]);
                     }
-                    if ($log->has('songs_version')) {
+                    if ($log->hasValue('songs_version')) {
                         echo __('Song') . ': ' . $this->Html->link($log->songs_version->song->title, ['_full' => true, 'controller' => 'Songs', 'action' => 'view', $log->songs_version->song->id]);
                         echo ', ' . __('Version') . ': ' . $this->Html->link($log->songs_version->title, ['_full' => true, 'controller' => 'SongsVersions', 'action' => 'view', $log->songs_version->id]);
                     }
-                    if ($log->has('date')) {
+                    if ($log->hasValue('date')) {
                         echo __('Date on') . ' ' . $log->date->begin->format('Y-m-d') . ': ' . $this->Html->link($log->date->title, ['_full' => true, 'controller' => 'Dates', 'action' => 'view', $log->date->id]);
                     }
-                    if ($log->has('idea')) {
+                    if ($log->hasValue('idea')) {
                         echo __('Idea') . ': ' . $this->Html->link($log->idea->title, ['_full' => true, 'controller' => 'Ideas', 'action' => 'view', $log->idea->id]);
                     }
-                    if ($log->has('collection')) {
+                    if ($log->hasValue('collection')) {
                         echo __('Collection') . ': ' . $this->Html->link($log->collection->title, ['_full' => true, 'controller' => 'Collections', 'action' => 'view', $log->collection->id]);
                     }
                 ?>
             </td>
             <td>
                 <?php
-                    if ($log->has('comment')) {
+                    if ($log->hasValue('comment')) {
                         echo __('Comment');
                     }
-                    if ($log->has('file')) {
+                    if ($log->hasValue('file')) {
                         echo __('File');
                     }
                 ?>

@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddLengthToVersions extends AbstractMigration
+class AddLengthToVersions extends BaseMigration
 {
     /**
      * Change Method.

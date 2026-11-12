@@ -9,6 +9,14 @@ namespace App\Controller;
  */
 class UsersController extends AppController
 {
+    #[\Override]
+    public function initialize(): void
+    {
+        parent::initialize();
+        $this->Authentication->addUnauthenticatedActions(['login', 'logout']);
+    }
+
+    #[\Override]
     public function isAuthorized($user)
     {
         if (in_array($this->request->getParam('action'), ['login', 'logout'])) {
@@ -32,11 +40,17 @@ class UsersController extends AppController
         $this->viewBuilder()->disableAutoLayout();
 
         if ($this->request->is('post')) {
-            $user = $this->Auth->identify();
-            if ($user) {
-                $this->Auth->setUser($user);
+            $result = $this->Authentication->getResult();
+            if ($result && $result->isValid()) {
                 $redirectUrl = urldecode((string) $this->request->getData('redirect')) ?: null;
-                return $this->redirect($this->Auth->redirectUrl($redirectUrl));
+                if ($redirectUrl) {
+                    return $this->redirect($redirectUrl);
+                }
+                $user = $result->getData();
+                if (!empty($user['is_active'])) {
+                    return $this->redirect(['controller' => 'Misc', 'action' => 'dashboard']);
+                }
+                return $this->redirect(['controller' => 'Pages', 'action' => 'display', 'welcome']);
             }
             $this->Flash->error(__('Invalid username or password, try again'));
         }
@@ -60,13 +74,14 @@ class UsersController extends AppController
 
     public function logout()
     {
-        return $this->redirect($this->Auth->logout());
+        $this->Authentication->logout();
+        return $this->redirect('/');
     }
 
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
@@ -80,17 +95,15 @@ class UsersController extends AppController
      * View method
      *
      * @param string|null $id User id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => ['Comments', 'Dates', 'Files', 'Ideas', 'Collections', 'Songs', 'Votes',
-                          'Comments.Songs', 'Comments.Ideas', 'Comments.Dates',
-                          'Files.Songs', 'Files.Ideas', 'Files.Dates',
-                          'Votes.Ideas', 'Votes.Dates'
-            ]
+        $user = $this->Users->get($id, contain: ['Comments', 'Dates', 'Files', 'Ideas', 'Collections', 'Songs', 'Votes',
+                      'Comments.Songs', 'Comments.Ideas', 'Comments.Dates',
+                      'Files.Songs', 'Files.Ideas', 'Files.Dates',
+                      'Votes.Ideas', 'Votes.Dates'
         ]);
 
         $this->set('user', $user);
@@ -100,7 +113,7 @@ class UsersController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -123,14 +136,12 @@ class UsersController extends AppController
      * Edit method
      *
      * @param string|null $id User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => []
-        ]);
+        $user = $this->Users->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
             // no new password entered => don't override!
@@ -154,7 +165,7 @@ class UsersController extends AppController
      * Delete method
      *
      * @param string|null $id User id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)

@@ -86,15 +86,16 @@ class CollectionsTable extends AbstractTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         return $validator;
     }
@@ -105,6 +106,7 @@ class CollectionsTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -112,6 +114,7 @@ class CollectionsTable extends AbstractTable
         return $rules;
     }
 
+    #[\Override]
     protected function getDiff($entity, $fields = null)
     {
         $diffs = [];
@@ -141,7 +144,7 @@ class CollectionsTable extends AbstractTable
         $diff = $this->getDiff($entity, ['title']);
 
         if (!empty($diff)) {
-            $logs = \Cake\ORM\TableRegistry::get('Logs');
+            $logs = \Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
             $log = $logs->newEntity([
                 'user_id' => $entity->modified_by,
                 'collection_id' => $entity->id,

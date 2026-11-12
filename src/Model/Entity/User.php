@@ -3,7 +3,7 @@
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
-use Cake\Auth\DefaultPasswordHasher;
+use Authentication\PasswordHasher\DefaultPasswordHasher;
 
 /**
  * User Entity
@@ -35,20 +35,16 @@ class User extends Entity
      * Note that when '*' is set to true, this allows all unspecified fields to
      * be mass assigned. For security purposes, it is advised to set '*' to false
      * (or remove it), and explicitly make individual fields accessible as needed.
-     *
-     * @var array
      */
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => true,
         'id' => false
     ];
 
     /**
      * Fields that are excluded from JSON versions of the entity.
-     *
-     * @var array
      */
-    protected $_hidden = [
+    protected array $_hidden = [
         'password'
     ];
 

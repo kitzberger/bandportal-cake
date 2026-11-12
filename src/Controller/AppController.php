@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Mailer\AppMailerTrait;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\EventInterface;
-use Cake\Mailer\Email;
 
 /**
  * Application Controller
@@ -17,6 +17,8 @@ use Cake\Mailer\Email;
  */
 class AppController extends Controller
 {
+    use AppMailerTrait;
+
     protected array $enabledFeatures = [];
 
     /**
@@ -30,21 +32,8 @@ class AppController extends Controller
     {
         parent::initialize();
 
-        $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
-
-        $this->loadComponent('Auth', [
-            'authorize' => ['Controller'],
-            'loginRedirect' => [
-                'controller' => 'Misc',
-                'action' => 'dashboard'
-            ],
-            'logoutRedirect' => [
-                'controller' => 'Pages',
-                'action' => 'display',
-                'home'
-            ]
-        ]);
+        $this->loadComponent('Authentication.Authentication');
 
         $this->viewBuilder()->addHelpers([
             'Tanuck/Markdown.Markdown' => [
@@ -64,17 +53,26 @@ class AppController extends Controller
      * @param \Cake\Event\EventInterface $event The beforeRender event.
      * @return void
      */
+    public function beforeFilter(EventInterface $event)
+    {
+        $identity = $this->Authentication->getIdentity();
+        if ($identity && !$this->isAuthorized($identity->getOriginalData())) {
+            $this->Flash->error('Access denied.');
+            return $this->redirect('/');
+        }
+    }
+
     public function beforeRender(EventInterface $event)
     {
-        $currentUser = $this->Auth->User();
+        $identity = $this->Authentication->getIdentity();
+        $currentUser = $identity ? $identity->getOriginalData() : null;
         $this->set('currentUser', $currentUser);
 
         if (isset($currentUser) && $currentUser['is_passive'] === true) {
             $sharesTable = $this->fetchTable('Shares');
-            $shares = $sharesTable->find('all', [
-                'conditions' => ['Shares.user_id' => $currentUser['id']],
-                'contain' => ['Dates', 'Songs', 'Ideas', 'Collections', 'Files']
-            ]);
+            $shares = $sharesTable->find()
+                ->where(['Shares.user_id' => $currentUser['id']])
+                ->contain(['Dates', 'Songs', 'Ideas', 'Collections', 'Files']);
             $this->set('currentUserShares', $shares);
         }
         $this->set('controller', $this->request->getParam('controller'));
@@ -83,10 +81,22 @@ class AppController extends Controller
         $this->set('remoteCalendarEnabled', $this->enabledFeatures['remoteCalendar']);
         $this->set('githubEnabled', $this->enabledFeatures['githubRepo']);
 
-        if (!array_key_exists('_serialize', $this->viewBuilder()->getVars()) &&
+        $useJson = $this->request->is('ajax') || $this->request->is('json');
+
+        if (!$useJson &&
+            !array_key_exists('_serialize', $this->viewBuilder()->getVars()) &&
             in_array($this->response->getType(), ['application/json', 'application/xml'])
         ) {
+            $useJson = true;
             $this->set('_serialize', true);
+        }
+
+        if ($useJson) {
+            $this->viewBuilder()->setClassName('Json');
+            $viewVars = $this->viewBuilder()->getVars();
+            if (isset($viewVars['_serialize'])) {
+                $this->viewBuilder()->setOption('serialize', $viewVars['_serialize']);
+            }
         }
     }
 
@@ -97,7 +107,14 @@ class AppController extends Controller
             return true;
         }
 
-        $this->Flash->error(__('Access denied'));
+        // Let logged-in non-admin users reach the home + welcome pages.
+        // Inactive users are funnelled home -> welcome in PagesController::beforeRender.
+        if ($this->request->getParam('controller') === 'Pages'
+            && $this->request->getParam('action') === 'display'
+            && in_array($this->request->getParam('pass.0'), ['home', 'welcome'], true)
+        ) {
+            return true;
+        }
 
         // Default deny
         return false;
@@ -115,24 +132,5 @@ class AppController extends Controller
         }
 
         return false;
-    }
-
-    protected function sendMail($subject, $message, $to, $template = 'default', $viewVars = [])
-    {
-        $deliveryProfile = 'default';
-        $config = Email::getConfig($deliveryProfile);
-        if (empty($config) || empty($config['from'])) {
-            throw new \Exception('Missing default from address in config!');
-        }
-        $from = $config['from'];
-
-        $email = new Email(['template' => $template, 'layout' => 'default']);
-        $email->setTransport('default')
-            ->setEmailFormat('html')
-            ->setViewVars($viewVars)
-            ->setTo($to)
-            ->setFrom($from)
-            ->setSubject($subject)
-            ->send($message);
     }
 }

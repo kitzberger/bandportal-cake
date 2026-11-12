@@ -12,6 +12,7 @@ use Cake\I18n\FrozenDate;
  */
 class DatesController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -41,7 +42,7 @@ class DatesController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
@@ -53,9 +54,14 @@ class DatesController extends AppController
         ;
         #debug($firstOfMonth); debug($lastOfMonth);
         $this->paginate = [
-            'contain' => ['Users', 'Votes'],
-            'order' => ['Dates.begin ASC'],
-            'conditions' => [
+            'limit' => 200,
+            'order' => ['Dates.begin' => 'ASC'],
+        ];
+
+        $query = $this->Dates
+            ->find()
+            ->contain(['Users', 'Votes'])
+            ->where([
                 'OR' => [
                     [
                         'Dates.begin >=' => $firstOfMonth,
@@ -65,10 +71,8 @@ class DatesController extends AppController
                     ],
                 ],
                 ['Dates.title LIKE' => '%' . $sword . '%'],
-            ],
-            'limit' => 200
-        ];
-        $dates = $this->paginate($this->Dates);
+            ]);
+        $dates = $this->paginate($query);
 
         $this->set(compact('dates', 'sword'));
         $this->set('_serialize', ['dates']);
@@ -78,72 +82,54 @@ class DatesController extends AppController
      * View method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
         $usersTable = $this->fetchTable('Users');
-        $users = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_active' => true,
-                ],
-            ]
-        );
-        $passiveUsers = $usersTable->find(
-            'all',
-            [
-                'conditions' => [
-                    'Users.is_passive' => true,
-                ],
-            ]
-        );
+        $users = $usersTable->find()
+            ->where(['Users.is_active' => true]);
+        $passiveUsers = $usersTable->find()
+            ->where(['Users.is_passive' => true]);
 
-        $date = $this->Dates->get($id, [
-            'contain' => [
-                'Users',
-                'Locations',
-                'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
-                'Files',
-                'Votes',
-                'Comments.Users',
-                'Files.Users',
-                'Votes.Users',
-                'Shares',
-                'Shares.Users'
-            ]
+        $date = $this->Dates->get($id, contain: [
+            'Users',
+            'Locations',
+            'Comments' => ['sort' => ['Comments.modified' => 'ASC']],
+            'Files',
+            'Votes',
+            'Comments.Users',
+            'Files.Users',
+            'Votes.Users',
+            'Shares',
+            'Shares.Users'
         ]);
 
         $thisDaysBegin = $date->begin->startOfDay();
         $thisDaysEnd = $date->end ? $date->end->endOfDay() : $date->begin->endOfDay();
 
-        $collidingDates = $this->Dates->find(
-            'all',
-            [
-                'contain' => ['Users'],
-                'conditions' => [
+        $collidingDates = $this->Dates->find()
+            ->contain(['Users'])
+            ->where([
+                [
+                    'Dates.id !=' => $id,
+                ],
+                'OR' => [
                     [
-                        'Dates.id !=' => $id,
+                        'Dates.begin >=' => $thisDaysBegin,
+                        'Dates.begin <=' => $thisDaysEnd,
                     ],
-                    'OR' => [
-                        [
-                            'Dates.begin >=' => $thisDaysBegin,
-                            'Dates.begin <=' => $thisDaysEnd,
-                        ],
-                        [
-                            'Dates.end >=' => $thisDaysBegin,
-                            'Dates.end <=' => $thisDaysEnd,
-                        ],
-                        [
-                            'Dates.begin <=' => $thisDaysBegin,
-                            'Dates.end >=' => $thisDaysEnd,
-                        ],
+                    [
+                        'Dates.end >=' => $thisDaysBegin,
+                        'Dates.end <=' => $thisDaysEnd,
+                    ],
+                    [
+                        'Dates.begin <=' => $thisDaysBegin,
+                        'Dates.end >=' => $thisDaysEnd,
                     ],
                 ],
-            ]
-        );
+            ]);
 
         $this->set('users', $users);
         $this->set('passiveUsers', $passiveUsers);
@@ -155,7 +141,7 @@ class DatesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -177,9 +163,10 @@ class DatesController extends AppController
                 }
 
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('date', $date);
+                    $this->set('_serialize', ['date']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The date has been saved.'));
                     return $this->redirect(['action' => 'index']);
@@ -188,8 +175,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $locations = $this->Dates->Locations->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Dates->Users->find('list')->limit(200)->orderBy('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->orderBy('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }
@@ -198,14 +185,12 @@ class DatesController extends AppController
      * Edit method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => ['Locations']
-        ]);
+        $date = $this->Dates->get($id, contain: ['Locations']);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $date = $this->Dates->patchEntity($date, $this->request->getData());
             if ($this->Dates->save($date)) {
@@ -228,8 +213,8 @@ class DatesController extends AppController
                 $this->Flash->error(__('The date could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Dates->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $locations = $this->Dates->Locations->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Dates->Users->find('list')->limit(200)->orderBy('username');
+        $locations = $this->Dates->Locations->find('list')->limit(200)->orderBy('title');
         $this->set(compact('date', 'users', 'locations'));
         $this->set('_serialize', ['date']);
     }
@@ -238,7 +223,7 @@ class DatesController extends AppController
      * Delete method
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
@@ -266,14 +251,12 @@ class DatesController extends AppController
      * Publishs a date onto the remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function publish($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => ['Locations']
-        ]);
+        $date = $this->Dates->get($id, contain: ['Locations']);
 
         if ($this->enabledFeatures['remoteCalendar']) {
             $uri = null;
@@ -302,8 +285,8 @@ class DatesController extends AppController
      * Unpublishs a date on the remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function unpublish($id = null)
     {
@@ -336,14 +319,12 @@ class DatesController extends AppController
      * Downloads a remote ics file from remote calendar
      *
      * @param string|null $id Date id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function download($id = null)
     {
-        $date = $this->Dates->get($id, [
-            'contain' => []
-        ]);
+        $date = $this->Dates->get($id, contain: []);
 
         if ($this->enabledFeatures['remoteCalendar']) {
             $uri = null;
@@ -366,21 +347,17 @@ class DatesController extends AppController
      *
      * @param string|null $date Date id.
      * @param string|null $user User id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function share($date = null, $user = null, $template = 'share')
     {
         $usersTable = $this->fetchTable('Users');
         $sharesTable = $this->fetchTable('Shares');
 
-        $date = $this->Dates->get($date, [
-            'contain' => ['Locations']
-        ]);
-        $user = $usersTable->get($user, [
-            'conditions' => [
-                'Users.is_passive' => true,
-            ],
+        $date = $this->Dates->get($date, contain: ['Locations']);
+        $user = $usersTable->get($user, conditions: [
+            'Users.is_passive' => true,
         ]);
 
         $subject = __('A date is now shared with you!');

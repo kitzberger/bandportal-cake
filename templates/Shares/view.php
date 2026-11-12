@@ -14,15 +14,15 @@
     <table class="vertical-table">
         <tr>
             <th scope="row"><?= __('User') ?></th>
-            <td><?= $share->has('user') ? $this->element('username', ['user' => $share->user]) : '' ?></td>
+            <td><?= $share->hasValue('user') ? $this->element('username', ['user' => $share->user]) : '' ?></td>
         </tr>
         <tr>
             <th scope="row"><?= __('Record') ?></th>
             <td>
-                <?= $share->has('date') ? $this->Html->link($share->date->title, ['controller' => 'Dates', 'action' => 'view', $share->date->id]) : '' ?>
-                <?= $share->has('idea') ? $this->Html->link($share->idea->title, ['controller' => 'Ideas', 'action' => 'view', $share->idea->id]) : '' ?>
-                <?= $share->has('song') ? $this->Html->link($share->song->title, ['controller' => 'Songs', 'action' => 'view', $share->song->id]) : '' ?>
-                <?= $share->has('collection') ? $this->Html->link($share->collection->title, ['controller' => 'Collections', 'action' => 'view', $share->collection->id]) : '' ?>
+                <?= $share->hasValue('date') ? $this->Html->link($share->date->title, ['controller' => 'Dates', 'action' => 'view', $share->date->id]) : '' ?>
+                <?= $share->hasValue('idea') ? $this->Html->link($share->idea->title, ['controller' => 'Ideas', 'action' => 'view', $share->idea->id]) : '' ?>
+                <?= $share->hasValue('song') ? $this->Html->link($share->song->title, ['controller' => 'Songs', 'action' => 'view', $share->song->id]) : '' ?>
+                <?= $share->hasValue('collection') ? $this->Html->link($share->collection->title, ['controller' => 'Collections', 'action' => 'view', $share->collection->id]) : '' ?>
             </td>
         </tr>
         <tr>

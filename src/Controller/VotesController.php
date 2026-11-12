@@ -9,6 +9,7 @@ namespace App\Controller;
  */
 class VotesController extends AppController
 {
+    #[\Override]
     public function isAuthorized($user)
     {
         $action = $this->request->getParam('action');
@@ -43,15 +44,14 @@ class VotesController extends AppController
     /**
      * Index method
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function index()
     {
-        $this->paginate = [
-            'contain' => ['Users', 'Dates', 'Ideas'],
-            'order' => ['Votes.modified DESC'],
-        ];
-        $votes = $this->paginate($this->Votes);
+        $query = $this->Votes
+            ->find()
+            ->contain(['Users', 'Dates', 'Ideas']);
+        $votes = $this->paginate($query, ['order' => ['Votes.modified' => 'DESC']]);
 
         $this->set(compact('votes'));
         $this->set('_serialize', ['votes']);
@@ -61,14 +61,12 @@ class VotesController extends AppController
      * View method
      *
      * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
-        $vote = $this->Votes->get($id, [
-            'contain' => ['Users', 'Dates', 'Ideas']
-        ]);
+        $vote = $this->Votes->get($id, contain: ['Users', 'Dates', 'Ideas']);
 
         $this->set('vote', $vote);
         $this->set('_serialize', ['vote']);
@@ -77,76 +75,74 @@ class VotesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Network\Response|void Redirects on successful add, renders view otherwise.
+     * @return \Cake\Http\Response|void Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
         $vote = $this->Votes->newEmptyEntity();
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            $previousVote = $this->Votes->find('all', [
-                'conditions' => [
+            $previousVote = $this->Votes->find()
+                ->where([
                     'user_id' => $data['user_id'] ?? '',
                     'OR' => [
                         'idea_id' => $data['idea_id'] ?? '',
                         'date_id' => $data['date_id'] ?? '',
                     ]
-                ],
-            ])->first();
+                ])
+                ->first();
             if ($previousVote) {
                 $vote = $this->Votes->patchEntity($previousVote, $data);
             } else {
                 $vote = $this->Votes->patchEntity($vote, $data);
             }
             if ($this->Votes->save($vote)) {
-                $vote = $this->Votes->get($vote['id'], [
-                    'contain' => ['Users', 'Dates', 'Ideas', 'Dates.Votes', 'Ideas.Votes']
-                ]);
+                $vote = $this->Votes->get($vote['id'], contain: ['Users', 'Dates', 'Ideas', 'Dates.Votes', 'Ideas.Votes']);
                 $usersTable = $this->fetchTable('Users');
                 $users = $usersTable->find('all');
-
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('vote', $vote);
+                    $this->viewBuilder()->setClassName('Json');
+                    $this->viewBuilder()->setOption('serialize', ['vote']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The vote has been saved.'));
                     return $this->redirect(['action' => 'index']);
                 }
+
             } else {
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Votes->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->orderBy('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
-        $this->set('_serialize', ['vote']);
+        $this->viewBuilder()->setOption('serialize', ['vote']);
     }
 
     /**
      * Edit method
      *
      * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Network\Exception\NotFoundException When record not found.
+     * @return \Cake\Http\Response|void Redirects on successful edit, renders view otherwise.
+     * @throws \Cake\Http\Exception\NotFoundException When record not found.
      */
     public function edit($id = null)
     {
-        $vote = $this->Votes->get($id, [
-            'contain' => []
-        ]);
+        $vote = $this->Votes->get($id, contain: []);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $vote = $this->Votes->patchEntity($vote, $this->request->getData());
             if ($this->Votes->save($vote)) {
-                $vote = $this->Votes->get($vote['id'], [
-                    'contain' => ['Users', 'Dates', 'Ideas']
-                ]);
+                $vote = $this->Votes->get($vote['id'], contain: ['Users', 'Dates', 'Ideas']);
 
                 if ($this->request->is('ajax')) {
-                    if ($this->request->is('json')) {
-                    }
-                    // no return, so the json rendering kicks in.
+                    $this->set('vote', $vote);
+                    $this->viewBuilder()->setClassName('Json');
+                    $this->viewBuilder()->setOption('serialize', ['vote']);
+
+                    return;
                 } else {
                     $this->Flash->success(__('The vote has been saved.'));
                     return $this->redirect(['action' => 'index']);
@@ -155,18 +151,18 @@ class VotesController extends AppController
                 $this->Flash->error(__('The vote could not be saved. Please, try again.'));
             }
         }
-        $users = $this->Votes->Users->find('list', ['limit' => 200, 'order' => 'username']);
-        $dates = $this->Votes->Dates->find('list', ['limit' => 200, 'order' => 'begin DESC', 'valueField' => 'combinedTitle']);
-        $ideas = $this->Votes->Ideas->find('list', ['limit' => 200, 'order' => 'title']);
+        $users = $this->Votes->Users->find('list')->limit(200)->orderBy('username');
+        $dates = $this->Votes->Dates->find('list', valueField: 'combinedTitle')->limit(200)->orderBy('begin DESC');
+        $ideas = $this->Votes->Ideas->find('list')->limit(200)->orderBy('title');
         $this->set(compact('vote', 'users', 'dates', 'ideas'));
-        $this->set('_serialize', ['vote']);
+        $this->viewBuilder()->setOption('serialize', ['vote']);
     }
 
     /**
      * Delete method
      *
      * @param string|null $id Vote id.
-     * @return \Cake\Network\Response|null Redirects to index.
+     * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)

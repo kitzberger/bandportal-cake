@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddIsPseudoToSongs extends AbstractMigration
+class AddIsPseudoToSongs extends BaseMigration
 {
     /**
      * Change Method.

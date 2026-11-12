@@ -1,8 +1,8 @@
 <?php
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddSortingToCollectionsFiles extends AbstractMigration
+class AddSortingToCollectionsFiles extends BaseMigration
 {
     /**
      * Change Method.

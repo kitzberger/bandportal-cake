@@ -9,10 +9,8 @@ class GithubComponent extends Component
 {
     /**
      * Other components utilized by GithubComponent
-     *
-     * @var array
      */
-    public $components = ['RequestHandler', 'Flash'];
+    public array $components = ['Flash'];
 
     /**
      * Initialize properties.

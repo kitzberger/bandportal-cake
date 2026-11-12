@@ -65,22 +65,23 @@ class IdeasTable extends AbstractTable
      *
      * @param \Cake\Validation\Validator $validator Validator instance.
      */
+    #[\Override]
     public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
-            ->allowEmpty('id', 'create');
+            ->allowEmptyString('id', null, 'create');
 
         $validator
             ->requirePresence('user_id', 'create')
-            ->notEmpty('user_id');
+            ->notEmptyString('user_id');
 
         $validator
             ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->notEmptyString('title');
 
         $validator
-            ->allowEmpty('text');
+            ->allowEmptyString('text');
 
         return $validator;
     }
@@ -91,6 +92,7 @@ class IdeasTable extends AbstractTable
      *
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      */
+    #[\Override]
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['user_id'], 'Users'));
@@ -102,7 +104,7 @@ class IdeasTable extends AbstractTable
     {
         $diff = $this->getDiff($entity, ['title', 'text']);
         if (!empty($diff)) {
-            $logs = \Cake\ORM\TableRegistry::get('Logs');
+            $logs = \Cake\ORM\TableRegistry::getTableLocator()->get('Logs');
             $log = $logs->newEntity([
                 'user_id' => $entity->modified_by,
                 'idea_id' => $entity->id,
